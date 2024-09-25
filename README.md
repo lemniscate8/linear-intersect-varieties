@@ -9,5 +9,5 @@ Efficient implementation of the algorithm of Johnston, Lovitz and Vijayaraghavan
   - discrepancy and approximation error reporting at multiple levels,
   - decomposition error methods to identify overcomplete tensors or problems with decomposition process.
 - Helper functions for symmetric lifts/symmetric khatri rhao products of subspaces.
-- Helper functions for partial expansions of symmetric tensors (Veronese embeddings to Segre embeddings along specificied modes).
+- Helper functions for partial expansions of symmetric tensors (Veronese embeddings to Segre embeddings along specified modes).
 - Efficient generation of an a basis of polynomials for the degree-2 component of the ideal for a Segre-Veronese variety.
