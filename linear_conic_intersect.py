@@ -2,6 +2,7 @@ import numpy as np
 import scipy as sp
 from scipy.special import binom
 from scipy import linalg as lg
+from scipy import sparse
 import segre_veronese_ideal_generation as ig
 import subspace_manipulation as suma
 import itertools
@@ -55,9 +56,11 @@ def jennrich_partial_decomp(
     flat_tensor,
     dims,
     mults,
+    # contraction_vectors=None,
     expansion_scheme=None,
     expansion_method=default_expansion_method,
     atol=1e-9,
+    expected_rank=None,
     rng=None,
 ):
     if rng is None:
@@ -80,12 +83,13 @@ def jennrich_partial_decomp(
     if flat_tensor.dtype == complex:
         weights = 0.5 * weights.astype(complex)
         weights += 0.5j * rng.normal(size=(slab_count, 2))
-    slices = matrized_tensor @ rng.normal(size=(slab_count, 2))
+    slices = matrized_tensor @ weights
     # Matrize slices to diagonalize
     fp2 = suma.tensor_flattening_pattern(dims, remain_mults, expand_arr[:, 1])
     factor1, factor2, dists = simultaneous_diagonalize(
         slices[fp2, 0], slices[fp2, 1], atol=atol
     )
+    # print("Factor 1 shape:", factor1.shape)
     # Use least squares to estimate remaining factors
     factor3, res = estimate_remaining_factor(
         (factor1, factor2), matrized_tensor, dims, remain_mults, expand_arr[:, 0:2]
@@ -104,23 +108,39 @@ def jennrich_partial_decomp(
     return factors, diagnostics, expand_arr
 
 
-def simultaneous_diagonalize(arr1, arr2, atol=1e-9):
+def simultaneous_diagonalize(
+    arr1, arr2, atol=1e-9, match_tol=1.0e-9, expected_rank=None
+):
     m1, *_ = lg.lstsq(arr1.T, arr2.T)
     m1eig, m1vecs = lg.eig(m1.T)
-    m1_estimated_rank = np.sum(np.abs(m1eig) > atol)
     m2, *_ = lg.lstsq(arr2, arr1)
     m2eig, m2vecs = lg.eig(m2.conj().T)
+
+    # Re-evaluate: this might be more robustly detected by poor matchings
+    # Investigate: ranks are larger than expected, is there numerical error
+    # accumulating from the scipy functions I'm using?
+    m1_estimated_rank = np.sum(np.abs(m1eig) > atol)
     m2_estimated_rank = np.sum(np.abs(m2eig) > atol)
     if m1_estimated_rank != m2_estimated_rank:
         raise Exception(
-            """Ill conditioned contractions supplied or tensor is overcomplete;
+            """Bad contraction or tensor is overcomplete;
 unable to accurately estimate or match components,
 some eigenvalues too close to zero."""
         )
     perm, match_dists = greedy_match_eigenvalues(
-        m1eig, m2eig, num_matches=m1_estimated_rank
+        m1eig,
+        m2eig,
+        num_matches=expected_rank if expected_rank is not None else m1_estimated_rank,
     )
-    return m1vecs[:, perm[0]], m2vecs.conj()[:, perm[1]], match_dists
+    if expected_rank is None:
+        keepers = match_dists < match_tol
+    else:
+        keepers = np.all
+    return (
+        m1vecs[:, perm[0, keepers]],
+        m2vecs.conj()[:, perm[1, keepers]],
+        match_dists[keepers],
+    )
 
 
 # Match eigenvalues from Jennrich's algorithm by computing all pairwise product
@@ -169,6 +189,19 @@ def partial_decomp_error(factors, flat_tensor, dims, mults, expansion):
 def extract_kernel_naive(sparse_projector, dense_basis, expected_solutions):
     dense_combos = sparse_projector @ dense_basis
     return lg.null_space(dense_combos), True
+
+
+# Methods for when we know that the first element in the lifted subspace
+# should have a coefficient of 1 on it
+# def extract_sparse_projective_kernel(
+#     sparse_projector, sparse_basis, expected_solutions
+# ):
+#     sparse_combos = sparse_projector @ sparse_basis
+#     # Extract first column as b, rest is A
+#     b = sparse_combos[:, :1].toarray()
+#     A = sparse_combos[:, 1:]
+#     x1, istop, *_ = sparse.linalg.lsqr(A, b)
+#     return
 
 
 def jennrich_total_decomp(
@@ -224,7 +257,6 @@ def demix_subspace(
                 max_subspace_dim, sv_string
             )
         )
-
     lifted_basis = suma.symmetric_lift(basis, 2)
     soln_cutout_matrix = ig.sv_poly_matrix(dims, mults)
     kernel_basis, found_all = kernel_method(
@@ -234,7 +266,7 @@ def demix_subspace(
     weights = suma.symmetric_weights(subspace_dim, 2)
     kernel_basis /= weights[:, None]
     kernel_dim = kernel_basis.shape[1]
-    print("Kernel dim is ", kernel_dim)
+    # print("Kernel dim is ", kernel_dim)
     if (recurse > 0) and (kernel_dim > subspace_dim):
         coefs, diagnostics = demix_subspace(
             kernel_basis, [subspace_dim], [2], recurse=recurse - 1, rng=rng
@@ -243,14 +275,13 @@ def demix_subspace(
     flat_ktensor = kernel_basis.flatten()
     ktensor_dims = [subspace_dim, kernel_dim]
     ktensor_mults = [2, 1]
-
     mode_expand = [[1, 1, 0], [0, 0, 1]]
-
     factors, diagnostics, *_ = jennrich_partial_decomp(
         flat_ktensor,
         ktensor_dims,
         ktensor_mults,
         expansion_scheme=mode_expand,
+        expected_rank=expected_solutions,
         rng=rng,
     )
     # TODO: first two factors will be the same due to symmetry but should check
@@ -260,15 +291,6 @@ def demix_subspace(
     # First factor contains coefficient combinations that will result in rank-1
     # tensors
     return factors[0], diagnostics
-
-
-def generateXVsubspace(R, S, dims, mults, rng=rng):
-    factors = [rng.normal(size=(d, S)) for d in dims]
-    planted = suma.khatri_rhao_products(factors, mults)
-    basis = rng.normal(size=(planted.shape[0], R))
-    basis[:, 0:S] = planted
-    basis /= np.linalg.norm(basis, axis=0, keepdims=True)
-    return basis, factors
 
 
 if __name__ == "__main__":
@@ -339,7 +361,7 @@ if __name__ == "__main__":
     # print(diagnostics)
     # print([factor.shape for factor in factors])
 
-    # # Test subspace demixing
+    # Test subspace demixing
     # dims = [5, 5]
     # mults = [1, 1]
     # R = ig.max_subspace_demixable(dims, mults)
@@ -348,7 +370,7 @@ if __name__ == "__main__":
     # S = int(R * plant_ratio)
     # # S = 3
     # print(R, S)
-    # raw_basis, factors = generateXVsubspace(R, S, dims, mults)
+    # raw_basis, factors = suma.generateXVsubspace(R, S, dims, mults)
     # column_mixer = rng.normal(size=(R, R))
     # basis = raw_basis @ column_mixer
     # coefs, diagnostics = demix_subspace(basis, dims, mults, rng=rng)
@@ -362,9 +384,9 @@ if __name__ == "__main__":
 
     # for val in itertools.combinations_with_replacement(range(3), 3):
     #     print(val)
-    index_iter = itertools.combinations_with_replacement(range(4), 2)
+    # index_iter = itertools.combinations_with_replacement(range(4), 2)
     # vals = tuple(zip(*index_iter)
     # print(np.arange(27).reshape((3, 3, 3))[vals])
-    for val in index_iter:
-        print(val)
-        print(val[1] + ((val[0] * (val[0] + 1)) // 2))
+    # for val in index_iter:
+    #     print(val)
+    #     print(val[1] + ((val[0] * (val[0] + 1)) // 2))

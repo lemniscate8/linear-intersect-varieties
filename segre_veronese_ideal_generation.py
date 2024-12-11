@@ -138,12 +138,7 @@ def basis_generator(dims, mults):
 # An ordering for the degree 2 monomials needed to cut out a segre-veronese
 # variety
 def sv_monomial_dictionary(dims, mults):
-    base_tuple_gen = itertools.product(
-        *[
-            itertools.combinations_with_replacement(range(d), m)
-            for d, m in zip(dims, mults)
-        ]
-    )
+    base_tuple_gen = basis_generator(dims, mults)
     lut = {}
     for i, tuple in enumerate(
         itertools.combinations_with_replacement(base_tuple_gen, 2)

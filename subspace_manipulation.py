@@ -5,6 +5,8 @@ from scipy.linalg import khatri_rao
 from scipy import sparse
 import segre_veronese_ideal_generation as ig
 
+rng = np.random.default_rng()
+
 
 def khatri_rhao_products(factors, mults=None):
     if (mults is None) or (np.all(np.array(mults, dtype=int) == 1)):
@@ -49,6 +51,9 @@ def tensor_products(matrices, mults=None):
     return tensor_products(sym_lifts)
 
 
+# Computes the symmetric lift of a basis
+# Note: the basis must either be a dense array or sparse array, sparse matrices
+# will cause and error
 def symmetric_lift(basis, k):
     if k == 1:
         return basis
@@ -77,7 +82,10 @@ def symmetric_lift(basis, k):
         for index in range(k):
             # print(row_iter[:, index, None])
             # print(col_iter[:, perm[index]])
-            prod = basis[row_iter[:, index, None], col_iter[:, perm[index]]] * prod
+            row_col_selection = basis[
+                row_iter[:, index, None], col_iter[:, perm[index]]
+            ]
+            prod = row_col_selection * prod
         lifted_basis += prod
         k_fact += 1
     return lifted_basis / k_fact
@@ -207,6 +215,17 @@ def greedy_match_directions(dirs1, dirs2):
 def similarity_between(directions1, directions2):
     permute, dot_array = greedy_match_directions(directions2, directions1)
     return np.abs(dot_array[permute[0], permute[1]])
+
+
+# Generate a random subspace spanned by R unit vectors of which S are flattened
+# rank-1 tensors and R-S are generic vectors
+def generateXVsubspace(R, S, dims, mults, rng=rng):
+    factors = [rng.normal(size=(d, S)) for d in dims]
+    planted = khatri_rhao_products(factors, mults)
+    basis = rng.normal(size=(planted.shape[0], R))
+    basis[:, 0:S] = planted
+    basis /= np.linalg.norm(basis, axis=0, keepdims=True)
+    return basis, factors
 
 
 if __name__ == "__main__":
