@@ -121,21 +121,27 @@ def simultaneous_diagonalize(
     # accumulating from the scipy functions I'm using?
     m1_estimated_rank = np.sum(np.abs(m1eig) > atol)
     m2_estimated_rank = np.sum(np.abs(m2eig) > atol)
-    if m1_estimated_rank != m2_estimated_rank:
-        raise Exception(
-            """Bad contraction or tensor is overcomplete;
-unable to accurately estimate or match components,
-some eigenvalues too close to zero."""
-        )
+    estimated_matches = min(m1_estimated_rank, m2_estimated_rank)
+    #     if m1_estimated_rank != m2_estimated_rank:
+    #         raise Exception(
+    #             """Bad contraction or tensor is overcomplete;
+    # unable to accurately estimate or match components,
+    # some eigenvalues too close to zero."""
+    #         )
     perm, match_dists = greedy_match_eigenvalues(
         m1eig,
         m2eig,
-        num_matches=expected_rank if expected_rank is not None else m1_estimated_rank,
+        num_matches=expected_rank if expected_rank is not None else estimated_matches,
     )
     if expected_rank is None:
         keepers = match_dists < match_tol
+        if np.all(~keepers):
+            raise Exception(
+                "No eigenvalues match above tolerance in simultaneous diagonalization.",
+                "no_simultaneous_diagonalization",
+            )
     else:
-        keepers = np.all
+        keepers = np.s_[:]
     return (
         m1vecs[:, perm[0, keepers]],
         m2vecs.conj()[:, perm[1, keepers]],
@@ -157,8 +163,8 @@ def greedy_match_eigenvalues(eigs1, eigs2, num_matches=None):
         permutation[0, i] = match_pt[0]
         permutation[1, i] = match_pt[1]
         distances[i] = dist_to_unity[match_pt]
-        dist_to_unity[match_pt[0], :] = np.infty
-        dist_to_unity[:, match_pt[1]] = np.infty
+        dist_to_unity[match_pt[0], :] = np.inf
+        dist_to_unity[:, match_pt[1]] = np.inf
     return permutation, distances
 
 
@@ -188,6 +194,9 @@ def partial_decomp_error(factors, flat_tensor, dims, mults, expansion):
 # product and uses scipy's svd-based null space method
 def extract_kernel_naive(sparse_projector, dense_basis, expected_solutions):
     dense_combos = sparse_projector @ dense_basis
+    if dense_combos.shape[1] == 1:
+        if np.linalg.norm(dense_combos) < 1e-9:
+            return np.array([[1.0]]), True
     return lg.null_space(dense_combos), True
 
 
@@ -251,12 +260,12 @@ def demix_subspace(
             )
         )
     max_subspace_dim = int(ig.max_subspace_demixable(dims, mults))
-    if subspace_dim > max_subspace_dim:
-        warnings.warn(
-            """The JLV algorithm used can only safely guarantee solutions with a subspace of dimension at most {} for planted solutions lying in {}.""".format(
-                max_subspace_dim, sv_string
-            )
-        )
+    # if subspace_dim > max_subspace_dim:
+    #     warnings.warn(
+    #         """The JLV algorithm used can only safely guarantee solutions with a subspace of dimension at most {} for planted solutions lying in {}.""".format(
+    #             max_subspace_dim, sv_string
+    #         )
+    #     )
     lifted_basis = suma.symmetric_lift(basis, 2)
     soln_cutout_matrix = ig.sv_poly_matrix(dims, mults)
     kernel_basis, found_all = kernel_method(
@@ -266,6 +275,9 @@ def demix_subspace(
     weights = suma.symmetric_weights(subspace_dim, 2)
     kernel_basis /= weights[:, None]
     kernel_dim = kernel_basis.shape[1]
+    if kernel_dim == 0:
+        # Code 1 means no planted solutions detected, only trivial intersection
+        return np.zeros((subspace_dim)), (1, None)
     # print("Kernel dim is ", kernel_dim)
     if (recurse > 0) and (kernel_dim > subspace_dim):
         coefs, diagnostics = demix_subspace(
@@ -290,7 +302,9 @@ def demix_subspace(
     # print(factors[0] / factors[1])
     # First factor contains coefficient combinations that will result in rank-1
     # tensors
-    return factors[0], diagnostics
+
+    # Code 0 indicates some planted solutions were found and decomposed
+    return factors[0], (0, diagnostics)
 
 
 if __name__ == "__main__":
