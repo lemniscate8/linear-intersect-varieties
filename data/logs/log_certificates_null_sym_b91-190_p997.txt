@@ -1,0 +1,24 @@
+---------------------------------------------------------
+Starting new session.
+Failed to find ./data/certificates/null_sym_b91-190_p997.csv with previous records so starting new file.
+Certifying seed, case (15, 91, 0)
+  Trials required: 1
+  Elapsed time: 80.539077
+Certifying seed, case (16, 103, 0)
+  Trials required: 1
+  Elapsed time: 177.912313
+Certifying seed, case (17, 117, 0)
+  Trials required: 1
+  Elapsed time: 380.957050
+Certifying seed, case (18, 131, 0)
+  Trials required: 1
+  Elapsed time: 715.889295
+Certifying seed, case (19, 146, 0)
+  Trials required: 1
+  Elapsed time: 1229.405346
+Certifying seed, case (20, 162, 0)
+  Trials required: 1
+  Elapsed time: 2139.248877
+Certifying seed, case (21, 179, 0)
+  Trials required: 1
+  Elapsed time: 3784.836884

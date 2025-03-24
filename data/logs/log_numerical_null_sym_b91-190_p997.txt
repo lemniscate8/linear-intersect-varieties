@@ -1,0 +1,17 @@
+---------------------------------------------------------
+Starting new session.
+Failed to find ./data/numerical/null_sym_b91-190_p997.csv with previous records so starting new file.
+Running numerics, case (15, 91, 0)
+  Elapsed time: 12.221231
+Running numerics, case (16, 103, 0)
+  Elapsed time: 24.869312
+Running numerics, case (17, 117, 0)
+  Elapsed time: 49.995082
+Running numerics, case (18, 131, 0)
+  Elapsed time: 99.241318
+Running numerics, case (19, 146, 0)
+  Elapsed time: 186.098130
+Running numerics, case (20, 162, 0)
+  Elapsed time: 343.755976
+Running numerics, case (21, 179, 0)
+  Elapsed time: 633.500450

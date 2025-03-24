@@ -1,0 +1,515 @@
+---------------------------------------------------------
+Starting new session.
+Failed to find ./data/numerical/null_b81-165_p997.csv with previous records so starting new file.
+Running numerics, case (2, 58, 57, 0)
+  Elapsed time: 0.883893
+Running numerics, case (2, 59, 58, 0)
+  Elapsed time: 0.954378
+Running numerics, case (2, 60, 59, 0)
+  Elapsed time: 1.051372
+Running numerics, case (2, 61, 60, 0)
+  Elapsed time: 1.137689
+Running numerics, case (2, 62, 61, 0)
+  Elapsed time: 1.271097
+Running numerics, case (2, 63, 62, 0)
+  Elapsed time: 1.418819
+Running numerics, case (2, 64, 63, 0)
+  Elapsed time: 1.480763
+Running numerics, case (2, 65, 64, 0)
+  Elapsed time: 1.667127
+Running numerics, case (2, 66, 65, 0)
+  Elapsed time: 1.859241
+Running numerics, case (2, 67, 66, 0)
+  Elapsed time: 2.006075
+Running numerics, case (3, 39, 66, 0)
+  Elapsed time: 1.946681
+Running numerics, case (2, 68, 67, 0)
+  Elapsed time: 2.176171
+Running numerics, case (3, 40, 67, 0)
+  Elapsed time: 2.152127
+Running numerics, case (2, 69, 68, 0)
+  Elapsed time: 2.412337
+Running numerics, case (2, 70, 69, 0)
+  Elapsed time: 2.595962
+Running numerics, case (4, 29, 69, 0)
+  Elapsed time: 2.480597
+Running numerics, case (3, 41, 69, 0)
+  Elapsed time: 2.532692
+Running numerics, case (2, 71, 70, 0)
+  Elapsed time: 2.835971
+Running numerics, case (5, 23, 70, 0)
+  Elapsed time: 2.761236
+Running numerics, case (2, 72, 71, 0)
+  Elapsed time: 3.066437
+Running numerics, case (3, 42, 71, 0)
+  Elapsed time: 2.994159
+Running numerics, case (4, 30, 71, 0)
+  Elapsed time: 3.005168
+Running numerics, case (2, 73, 72, 0)
+  Elapsed time: 3.313110
+Running numerics, case (2, 74, 73, 0)
+  Elapsed time: 3.620582
+Running numerics, case (3, 43, 73, 0)
+  Elapsed time: 3.498295
+Running numerics, case (5, 24, 73, 0)
+  Elapsed time: 3.437214
+Running numerics, case (2, 75, 74, 0)
+  Elapsed time: 3.915238
+Running numerics, case (4, 31, 74, 0)
+  Elapsed time: 3.774824
+Running numerics, case (9, 13, 74, 0)
+  Elapsed time: 3.620033
+Running numerics, case (3, 44, 74, 0)
+  Elapsed time: 3.932221
+Running numerics, case (2, 76, 75, 0)
+  Elapsed time: 4.285142
+Running numerics, case (6, 20, 75, 0)
+  Elapsed time: 4.058769
+Running numerics, case (7, 17, 75, 0)
+  Elapsed time: 3.886738
+Running numerics, case (2, 77, 76, 0)
+  Elapsed time: 4.591396
+Running numerics, case (8, 15, 76, 0)
+  Elapsed time: 4.320919
+Running numerics, case (3, 45, 76, 0)
+  Elapsed time: 4.590539
+Running numerics, case (10, 12, 76, 0)
+  Elapsed time: 4.478561
+Running numerics, case (4, 32, 76, 0)
+  Elapsed time: 4.421501
+Running numerics, case (5, 25, 76, 0)
+  Elapsed time: 4.405054
+Running numerics, case (2, 78, 77, 0)
+  Elapsed time: 4.948741
+Running numerics, case (11, 11, 77, 0)
+  Elapsed time: 4.758318
+Running numerics, case (2, 79, 78, 0)
+  Elapsed time: 5.392433
+Running numerics, case (3, 46, 78, 0)
+  Elapsed time: 5.250381
+Running numerics, case (6, 21, 78, 0)
+  Elapsed time: 5.311917
+Running numerics, case (2, 80, 79, 0)
+  Elapsed time: 5.595869
+Running numerics, case (4, 33, 79, 0)
+  Elapsed time: 5.378915
+Running numerics, case (7, 18, 79, 0)
+  Elapsed time: 5.557077
+Running numerics, case (2, 81, 80, 0)
+  Elapsed time: 5.985140
+Running numerics, case (3, 47, 80, 0)
+  Elapsed time: 6.061994
+Running numerics, case (5, 26, 80, 0)
+  Elapsed time: 5.957662
+Running numerics, case (9, 14, 80, 0)
+  Elapsed time: 5.964482
+Running numerics, case (2, 82, 81, 0)
+  Elapsed time: 6.754616
+Running numerics, case (8, 16, 81, 0)
+  Elapsed time: 6.411342
+Running numerics, case (4, 34, 81, 0)
+  Elapsed time: 6.627756
+Running numerics, case (3, 48, 81, 0)
+  Elapsed time: 6.551395
+Running numerics, case (2, 83, 82, 0)
+  Elapsed time: 7.150968
+Running numerics, case (6, 22, 82, 0)
+  Elapsed time: 7.088008
+Running numerics, case (2, 84, 83, 0)
+  Elapsed time: 7.795463
+Running numerics, case (10, 13, 83, 0)
+  Elapsed time: 7.435676
+Running numerics, case (5, 27, 83, 0)
+  Elapsed time: 7.526005
+Running numerics, case (3, 49, 83, 0)
+  Elapsed time: 7.486616
+Running numerics, case (4, 35, 84, 0)
+  Elapsed time: 8.041787
+Running numerics, case (2, 85, 84, 0)
+  Elapsed time: 8.352145
+Running numerics, case (7, 19, 84, 0)
+  Elapsed time: 8.107482
+Running numerics, case (11, 12, 84, 0)
+  Elapsed time: 8.199445
+Running numerics, case (2, 86, 85, 0)
+  Elapsed time: 8.841784
+Running numerics, case (3, 50, 85, 0)
+  Elapsed time: 8.621440
+Running numerics, case (2, 87, 86, 0)
+  Elapsed time: 9.519048
+Running numerics, case (5, 28, 86, 0)
+  Elapsed time: 9.219416
+Running numerics, case (4, 36, 86, 0)
+  Elapsed time: 9.269379
+Running numerics, case (9, 15, 86, 0)
+  Elapsed time: 9.213730
+Running numerics, case (6, 23, 86, 0)
+  Elapsed time: 9.260973
+Running numerics, case (8, 17, 86, 0)
+  Elapsed time: 9.258076
+Running numerics, case (3, 51, 86, 0)
+  Elapsed time: 9.551305
+Running numerics, case (2, 88, 87, 0)
+  Elapsed time: 9.991045
+Running numerics, case (2, 89, 88, 0)
+  Elapsed time: 10.682329
+Running numerics, case (3, 52, 88, 0)
+  Elapsed time: 10.800104
+Running numerics, case (7, 20, 88, 0)
+  Elapsed time: 10.659507
+Running numerics, case (4, 37, 88, 0)
+  Elapsed time: 10.608119
+Running numerics, case (2, 90, 89, 0)
+  Elapsed time: 11.495155
+Running numerics, case (5, 29, 89, 0)
+  Elapsed time: 11.307909
+Running numerics, case (10, 14, 90, 0)
+  Elapsed time: 12.870374
+Running numerics, case (2, 91, 90, 0)
+  Elapsed time: 13.424991
+Running numerics, case (3, 53, 90, 0)
+  Elapsed time: 12.620672
+Running numerics, case (6, 24, 90, 0)
+  Elapsed time: 12.281102
+Running numerics, case (2, 92, 91, 0)
+  Elapsed time: 13.117863
+Running numerics, case (4, 38, 91, 0)
+  Elapsed time: 12.924438
+Running numerics, case (2, 93, 92, 0)
+  Elapsed time: 13.950673
+Running numerics, case (8, 18, 92, 0)
+  Elapsed time: 13.245258
+Running numerics, case (11, 13, 92, 0)
+  Elapsed time: 13.602419
+Running numerics, case (3, 54, 92, 0)
+  Elapsed time: 13.443325
+Running numerics, case (9, 16, 92, 0)
+  Elapsed time: 13.315972
+Running numerics, case (5, 30, 92, 0)
+  Elapsed time: 13.911441
+Running numerics, case (12, 12, 92, 0)
+  Elapsed time: 13.477507
+Running numerics, case (2, 94, 93, 0)
+  Elapsed time: 14.547503
+Running numerics, case (7, 21, 93, 0)
+  Elapsed time: 14.529934
+Running numerics, case (4, 39, 93, 0)
+  Elapsed time: 14.680441
+Running numerics, case (3, 55, 93, 0)
+  Elapsed time: 14.541759
+Running numerics, case (2, 95, 94, 0)
+  Elapsed time: 15.272731
+Running numerics, case (6, 25, 94, 0)
+  Elapsed time: 14.962306
+Running numerics, case (2, 96, 95, 0)
+  Elapsed time: 16.260747
+Running numerics, case (3, 56, 95, 0)
+  Elapsed time: 16.018439
+Running numerics, case (5, 31, 95, 0)
+  Elapsed time: 16.415258
+Running numerics, case (2, 97, 96, 0)
+  Elapsed time: 17.347366
+Running numerics, case (4, 40, 96, 0)
+  Elapsed time: 16.880393
+Running numerics, case (10, 15, 96, 0)
+  Elapsed time: 16.663947
+Running numerics, case (2, 98, 97, 0)
+  Elapsed time: 18.202332
+Running numerics, case (8, 19, 97, 0)
+  Elapsed time: 17.867825
+Running numerics, case (3, 57, 97, 0)
+  Elapsed time: 18.067465
+Running numerics, case (7, 22, 98, 0)
+  Elapsed time: 18.684425
+Running numerics, case (2, 99, 98, 0)
+  Elapsed time: 19.186187
+Running numerics, case (6, 26, 98, 0)
+  Elapsed time: 18.751946
+Running numerics, case (9, 17, 98, 0)
+  Elapsed time: 19.034577
+Running numerics, case (4, 41, 98, 0)
+  Elapsed time: 18.884525
+Running numerics, case (2, 100, 99, 0)
+  Elapsed time: 21.254792
+Running numerics, case (3, 58, 99, 0)
+  Elapsed time: 19.865299
+Running numerics, case (5, 32, 99, 0)
+  Elapsed time: 19.980848
+Running numerics, case (11, 14, 99, 0)
+  Elapsed time: 19.957362
+Running numerics, case (2, 101, 100, 0)
+  Elapsed time: 21.952003
+Running numerics, case (3, 59, 100, 0)
+  Elapsed time: 21.461803
+Running numerics, case (12, 13, 100, 0)
+  Elapsed time: 21.472942
+Running numerics, case (2, 102, 101, 0)
+  Elapsed time: 22.705382
+Running numerics, case (4, 42, 101, 0)
+  Elapsed time: 23.113418
+Running numerics, case (2, 103, 102, 0)
+  Elapsed time: 24.063003
+Running numerics, case (6, 27, 102, 0)
+  Elapsed time: 23.398083
+Running numerics, case (5, 33, 102, 0)
+  Elapsed time: 23.811542
+Running numerics, case (3, 60, 102, 0)
+  Elapsed time: 24.698709
+Running numerics, case (7, 23, 102, 0)
+  Elapsed time: 23.694537
+Running numerics, case (8, 20, 102, 0)
+  Elapsed time: 23.483446
+Running numerics, case (2, 104, 103, 0)
+  Elapsed time: 25.845945
+Running numerics, case (10, 16, 103, 0)
+  Elapsed time: 24.625529
+Running numerics, case (4, 43, 103, 0)
+  Elapsed time: 25.595462
+Running numerics, case (2, 105, 104, 0)
+  Elapsed time: 27.037583
+Running numerics, case (3, 61, 104, 0)
+  Elapsed time: 26.990723
+Running numerics, case (9, 18, 104, 0)
+  Elapsed time: 26.386892
+Running numerics, case (2, 106, 105, 0)
+  Elapsed time: 28.311647
+Running numerics, case (5, 34, 105, 0)
+  Elapsed time: 28.667467
+Running numerics, case (6, 28, 105, 0)
+  Elapsed time: 28.995527
+Running numerics, case (2, 107, 106, 0)
+  Elapsed time: 30.102010
+Running numerics, case (3, 62, 106, 0)
+  Elapsed time: 29.531968
+Running numerics, case (4, 44, 106, 0)
+  Elapsed time: 29.676364
+Running numerics, case (11, 15, 106, 0)
+  Elapsed time: 29.706825
+Running numerics, case (2, 108, 107, 0)
+  Elapsed time: 32.090140
+Running numerics, case (7, 24, 107, 0)
+  Elapsed time: 30.922656
+Running numerics, case (3, 63, 107, 0)
+  Elapsed time: 31.438268
+Running numerics, case (8, 21, 107, 0)
+  Elapsed time: 30.990979
+Running numerics, case (2, 109, 108, 0)
+  Elapsed time: 34.601441
+Running numerics, case (4, 45, 108, 0)
+  Elapsed time: 33.496313
+Running numerics, case (5, 35, 108, 0)
+  Elapsed time: 33.862088
+Running numerics, case (2, 110, 109, 0)
+  Elapsed time: 35.221844
+Running numerics, case (12, 14, 109, 0)
+  Elapsed time: 35.056923
+Running numerics, case (3, 64, 109, 0)
+  Elapsed time: 35.119759
+Running numerics, case (13, 13, 109, 0)
+  Elapsed time: 35.131862
+Running numerics, case (6, 29, 109, 0)
+  Elapsed time: 35.675940
+Running numerics, case (2, 111, 110, 0)
+  Elapsed time: 37.152822
+Running numerics, case (10, 17, 110, 0)
+  Elapsed time: 35.861247
+Running numerics, case (9, 19, 110, 0)
+  Elapsed time: 36.766938
+Running numerics, case (4, 46, 110, 0)
+  Elapsed time: 37.729837
+Running numerics, case (2, 112, 111, 0)
+  Elapsed time: 38.504919
+Running numerics, case (3, 65, 111, 0)
+  Elapsed time: 38.672824
+Running numerics, case (7, 25, 111, 0)
+  Elapsed time: 38.583964
+Running numerics, case (5, 36, 111, 0)
+  Elapsed time: 38.520486
+Running numerics, case (2, 113, 112, 0)
+  Elapsed time: 40.194221
+Running numerics, case (3, 66, 112, 0)
+  Elapsed time: 40.945344
+Running numerics, case (2, 114, 113, 0)
+  Elapsed time: 42.946816
+Running numerics, case (8, 22, 113, 0)
+  Elapsed time: 42.538560
+Running numerics, case (4, 47, 113, 0)
+  Elapsed time: 44.076228
+Running numerics, case (6, 30, 113, 0)
+  Elapsed time: 42.984654
+Running numerics, case (2, 115, 114, 0)
+  Elapsed time: 45.638250
+Running numerics, case (11, 16, 114, 0)
+  Elapsed time: 44.070053
+Running numerics, case (3, 67, 114, 0)
+  Elapsed time: 45.443598
+Running numerics, case (5, 37, 114, 0)
+  Elapsed time: 45.798066
+Running numerics, case (2, 116, 115, 0)
+  Elapsed time: 48.414675
+Running numerics, case (4, 48, 115, 0)
+  Elapsed time: 47.532028
+Running numerics, case (7, 26, 116, 0)
+  Elapsed time: 49.785254
+Running numerics, case (3, 68, 116, 0)
+  Elapsed time: 50.232483
+Running numerics, case (9, 20, 116, 0)
+  Elapsed time: 48.563721
+Running numerics, case (10, 18, 116, 0)
+  Elapsed time: 49.661340
+Running numerics, case (12, 15, 117, 0)
+  Elapsed time: 52.450323
+Running numerics, case (6, 31, 117, 0)
+  Elapsed time: 51.767216
+Running numerics, case (5, 38, 118, 0)
+  Elapsed time: 55.102171
+Running numerics, case (3, 69, 118, 0)
+  Elapsed time: 55.431996
+Running numerics, case (4, 49, 118, 0)
+  Elapsed time: 54.553177
+Running numerics, case (8, 23, 118, 0)
+  Elapsed time: 54.863678
+Running numerics, case (13, 14, 118, 0)
+  Elapsed time: 55.545882
+Running numerics, case (3, 70, 119, 0)
+  Elapsed time: 57.493206
+Running numerics, case (4, 50, 120, 0)
+  Elapsed time: 61.267245
+Running numerics, case (7, 27, 120, 0)
+  Elapsed time: 60.112406
+Running numerics, case (5, 39, 121, 0)
+  Elapsed time: 63.692070
+Running numerics, case (6, 32, 121, 0)
+  Elapsed time: 62.735991
+Running numerics, case (3, 71, 121, 0)
+  Elapsed time: 62.987421
+Running numerics, case (11, 17, 121, 0)
+  Elapsed time: 62.443354
+Running numerics, case (9, 21, 122, 0)
+  Elapsed time: 65.467204
+Running numerics, case (4, 51, 123, 0)
+  Elapsed time: 70.003730
+Running numerics, case (3, 72, 123, 0)
+  Elapsed time: 69.146831
+Running numerics, case (10, 19, 123, 0)
+  Elapsed time: 68.722863
+Running numerics, case (8, 24, 123, 0)
+  Elapsed time: 69.637056
+Running numerics, case (5, 40, 124, 0)
+  Elapsed time: 71.023008
+Running numerics, case (3, 73, 125, 0)
+  Elapsed time: 76.176338
+Running numerics, case (6, 33, 125, 0)
+  Elapsed time: 75.271485
+Running numerics, case (12, 16, 125, 0)
+  Elapsed time: 75.342625
+Running numerics, case (7, 28, 125, 0)
+  Elapsed time: 78.086958
+Running numerics, case (4, 52, 125, 0)
+  Elapsed time: 76.290635
+Running numerics, case (3, 74, 126, 0)
+  Elapsed time: 80.227535
+Running numerics, case (13, 15, 127, 0)
+  Elapsed time: 89.683003
+Running numerics, case (5, 41, 127, 0)
+  Elapsed time: 83.626049
+Running numerics, case (4, 53, 128, 0)
+  Elapsed time: 85.584907
+Running numerics, case (14, 14, 128, 0)
+  Elapsed time: 84.860479
+Running numerics, case (9, 22, 128, 0)
+  Elapsed time: 86.122597
+Running numerics, case (3, 75, 128, 0)
+  Elapsed time: 85.894593
+Running numerics, case (8, 25, 129, 0)
+  Elapsed time: 90.540957
+Running numerics, case (6, 34, 129, 0)
+  Elapsed time: 89.184724
+Running numerics, case (11, 18, 129, 0)
+  Elapsed time: 89.306617
+Running numerics, case (7, 29, 130, 0)
+  Elapsed time: 94.490405
+Running numerics, case (10, 20, 130, 0)
+  Elapsed time: 94.545448
+Running numerics, case (3, 76, 130, 0)
+  Elapsed time: 96.374722
+Running numerics, case (4, 54, 130, 0)
+  Elapsed time: 95.350541
+Running numerics, case (5, 42, 130, 0)
+  Elapsed time: 95.745577
+Running numerics, case (3, 77, 132, 0)
+  Elapsed time: 104.001919
+Running numerics, case (4, 55, 132, 0)
+  Elapsed time: 105.357148
+Running numerics, case (6, 35, 133, 0)
+  Elapsed time: 107.117960
+Running numerics, case (12, 17, 133, 0)
+  Elapsed time: 109.123293
+Running numerics, case (5, 43, 133, 0)
+  Elapsed time: 110.302172
+Running numerics, case (8, 26, 134, 0)
+  Elapsed time: 112.912925
+Running numerics, case (9, 23, 134, 0)
+  Elapsed time: 112.295791
+Running numerics, case (7, 30, 134, 0)
+  Elapsed time: 112.928120
+Running numerics, case (4, 56, 135, 0)
+  Elapsed time: 119.014831
+Running numerics, case (13, 16, 136, 0)
+  Elapsed time: 121.683742
+Running numerics, case (11, 19, 136, 0)
+  Elapsed time: 121.026292
+Running numerics, case (10, 21, 136, 0)
+  Elapsed time: 123.388773
+Running numerics, case (6, 36, 136, 0)
+  Elapsed time: 123.504416
+Running numerics, case (5, 44, 137, 0)
+  Elapsed time: 128.385656
+Running numerics, case (14, 15, 137, 0)
+  Elapsed time: 130.854071
+Running numerics, case (4, 57, 137, 0)
+  Elapsed time: 131.279137
+Running numerics, case (7, 31, 139, 0)
+  Elapsed time: 138.627248
+Running numerics, case (8, 27, 139, 0)
+  Elapsed time: 140.938187
+Running numerics, case (5, 45, 140, 0)
+  Elapsed time: 147.947916
+Running numerics, case (4, 58, 140, 0)
+  Elapsed time: 147.477754
+Running numerics, case (9, 24, 140, 0)
+  Elapsed time: 146.728457
+Running numerics, case (6, 37, 140, 0)
+  Elapsed time: 146.508608
+Running numerics, case (12, 18, 141, 0)
+  Elapsed time: 151.684859
+Running numerics, case (5, 46, 143, 0)
+  Elapsed time: 166.299251
+Running numerics, case (10, 22, 143, 0)
+  Elapsed time: 163.858590
+Running numerics, case (7, 32, 143, 0)
+  Elapsed time: 167.509172
+Running numerics, case (11, 20, 144, 0)
+  Elapsed time: 171.130692
+Running numerics, case (6, 38, 144, 0)
+  Elapsed time: 181.761257
+Running numerics, case (8, 28, 144, 0)
+  Elapsed time: 171.708678
+Running numerics, case (13, 17, 145, 0)
+  Elapsed time: 178.439908
+Running numerics, case (9, 25, 146, 0)
+  Elapsed time: 188.216169
+Running numerics, case (14, 16, 147, 0)
+  Elapsed time: 194.403137
+Running numerics, case (15, 15, 147, 0)
+  Elapsed time: 196.632976
+Running numerics, case (7, 33, 148, 0)
+  Elapsed time: 203.503970
+Running numerics, case (12, 19, 149, 0)
+  Elapsed time: 209.796892
+Running numerics, case (8, 29, 150, 0)
+  Elapsed time: 217.961676
+Running numerics, case (10, 23, 150, 0)
+  Elapsed time: 218.913318
+Running numerics, case (11, 21, 151, 0)
+  Elapsed time: 227.608561

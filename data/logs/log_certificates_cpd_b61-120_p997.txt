@@ -1,0 +1,512 @@
+---------------------------------------------------------
+Starting new session.
+Failed to find ./data/certificates/cpd_d61-120_p997.csv with previous records so starting new file.
+Certifying seed, case (2, 44, 44, 44)
+  Trials required: 1
+  Elapsed time: 1.003704
+Certifying seed, case (2, 45, 45, 45)
+  Trials required: 1
+  Elapsed time: 1.151084
+Certifying seed, case (2, 46, 46, 46)
+  Trials required: 1
+  Elapsed time: 1.281240
+Certifying seed, case (2, 47, 47, 47)
+  Trials required: 1
+  Elapsed time: 1.469909
+Certifying seed, case (2, 48, 48, 48)
+  Trials required: 1
+  Elapsed time: 1.691875
+Certifying seed, case (2, 49, 49, 49)
+  Trials required: 1
+  Elapsed time: 2.074174
+Certifying seed, case (3, 29, 49, 49)
+  Trials required: 1
+  Elapsed time: 2.079273
+Certifying seed, case (2, 50, 50, 50)
+  Trials required: 1
+  Elapsed time: 2.122323
+Certifying seed, case (2, 51, 51, 51)
+  Trials required: 1
+  Elapsed time: 2.344297
+Certifying seed, case (3, 30, 51, 51)
+  Trials required: 1
+  Elapsed time: 2.550816
+Certifying seed, case (2, 52, 52, 52)
+  Trials required: 1
+  Elapsed time: 2.670422
+Certifying seed, case (2, 53, 53, 53)
+  Trials required: 1
+  Elapsed time: 2.992115
+Certifying seed, case (4, 22, 53, 53)
+  Trials required: 1
+  Elapsed time: 3.110560
+Certifying seed, case (3, 31, 53, 53)
+  Trials required: 1
+  Elapsed time: 3.155508
+Certifying seed, case (2, 54, 54, 54)
+  Trials required: 1
+  Elapsed time: 3.260878
+Certifying seed, case (2, 55, 55, 55)
+  Trials required: 1
+  Elapsed time: 3.596168
+Certifying seed, case (3, 32, 55, 55)
+  Trials required: 1
+  Elapsed time: 3.845225
+Certifying seed, case (4, 23, 55, 55)
+  Trials required: 1
+  Elapsed time: 4.000571
+Certifying seed, case (5, 18, 55, 55)
+  Trials required: 1
+  Elapsed time: 4.023165
+Certifying seed, case (2, 56, 56, 56)
+  Trials required: 1
+  Elapsed time: 4.117555
+Certifying seed, case (8, 11, 56, 56)
+  Trials required: 1
+  Elapsed time: 4.432128
+Certifying seed, case (6, 15, 56, 56)
+  Trials required: 1
+  Elapsed time: 4.659707
+Certifying seed, case (3, 33, 56, 56)
+  Trials required: 1
+  Elapsed time: 4.562991
+Certifying seed, case (2, 57, 57, 57)
+  Trials required: 1
+  Elapsed time: 4.664878
+Certifying seed, case (9, 10, 57, 57)
+  Trials required: 1
+  Elapsed time: 4.905705
+Certifying seed, case (7, 13, 57, 57)
+  Trials required: 1
+  Elapsed time: 5.078400
+Certifying seed, case (2, 58, 58, 58)
+  Trials required: 1
+  Elapsed time: 5.043224
+Certifying seed, case (4, 24, 58, 58)
+  Trials required: 1
+  Elapsed time: 5.446358
+Certifying seed, case (3, 34, 58, 58)
+  Trials required: 1
+  Elapsed time: 5.601079
+Certifying seed, case (5, 19, 58, 58)
+  Trials required: 1
+  Elapsed time: 5.694369
+Certifying seed, case (2, 59, 59, 59)
+  Trials required: 1
+  Elapsed time: 5.654166
+Certifying seed, case (2, 60, 60, 60)
+  Trials required: 1
+  Elapsed time: 6.271073
+Certifying seed, case (3, 35, 60, 60)
+  Trials required: 1
+  Elapsed time: 6.859926
+Certifying seed, case (4, 25, 60, 60)
+  Trials required: 1
+  Elapsed time: 6.869501
+Certifying seed, case (6, 16, 60, 60)
+  Trials required: 1
+  Elapsed time: 6.866784
+Certifying seed, case (2, 61, 61, 61)
+  Trials required: 1
+  Elapsed time: 7.087522
+Certifying seed, case (8, 12, 61, 61)
+  Trials required: 1
+  Elapsed time: 7.478836
+Certifying seed, case (3, 36, 61, 61)
+  Trials required: 1
+  Elapsed time: 7.994419
+Certifying seed, case (2, 62, 62, 62)
+  Trials required: 1
+  Elapsed time: 7.906517
+Certifying seed, case (5, 20, 62, 62)
+  Trials required: 1
+  Elapsed time: 8.371772
+Certifying seed, case (7, 14, 62, 62)
+  Trials required: 1
+  Elapsed time: 8.336352
+Certifying seed, case (4, 26, 62, 62)
+  Trials required: 1
+  Elapsed time: 8.376791
+Certifying seed, case (2, 63, 63, 63)
+  Trials required: 1
+  Elapsed time: 8.440875
+Certifying seed, case (9, 11, 63, 63)
+  Trials required: 1
+  Elapsed time: 8.916666
+Certifying seed, case (3, 37, 63, 63)
+  Trials required: 1
+  Elapsed time: 9.338051
+Certifying seed, case (2, 64, 64, 64)
+  Trials required: 1
+  Elapsed time: 9.472333
+Certifying seed, case (10, 10, 64, 64)
+  Trials required: 1
+  Elapsed time: 10.083658
+Certifying seed, case (6, 17, 64, 64)
+  Trials required: 1
+  Elapsed time: 10.094082
+Certifying seed, case (2, 65, 65, 65)
+  Trials required: 1
+  Elapsed time: 10.287496
+Certifying seed, case (5, 21, 65, 65)
+  Trials required: 1
+  Elapsed time: 11.268560
+Certifying seed, case (4, 27, 65, 65)
+  Trials required: 1
+  Elapsed time: 11.084696
+Certifying seed, case (3, 38, 65, 65)
+  Trials required: 1
+  Elapsed time: 11.188703
+Certifying seed, case (2, 66, 66, 66)
+  Trials required: 1
+  Elapsed time: 10.997268
+Certifying seed, case (8, 13, 66, 66)
+  Trials required: 1
+  Elapsed time: 11.930557
+Certifying seed, case (7, 15, 66, 66)
+  Trials required: 1
+  Elapsed time: 12.147019
+Certifying seed, case (2, 67, 67, 67)
+  Trials required: 1
+  Elapsed time: 11.859986
+Certifying seed, case (3, 39, 67, 67)
+  Trials required: 1
+  Elapsed time: 12.581729
+Certifying seed, case (4, 28, 67, 67)
+  Trials required: 1
+  Elapsed time: 13.245334
+Certifying seed, case (2, 68, 68, 68)
+  Trials required: 1
+  Elapsed time: 13.367010
+Certifying seed, case (6, 18, 68, 68)
+  Trials required: 1
+  Elapsed time: 14.673294
+Certifying seed, case (5, 22, 68, 68)
+  Trials required: 1
+  Elapsed time: 14.981384
+Certifying seed, case (3, 40, 68, 68)
+  Trials required: 1
+  Elapsed time: 15.130938
+Certifying seed, case (2, 69, 69, 69)
+  Trials required: 1
+  Elapsed time: 14.101069
+Certifying seed, case (9, 12, 69, 69)
+  Trials required: 1
+  Elapsed time: 15.067713
+Certifying seed, case (2, 70, 70, 70)
+  Trials required: 1
+  Elapsed time: 15.197063
+Certifying seed, case (4, 29, 70, 70)
+  Trials required: 1
+  Elapsed time: 16.452575
+Certifying seed, case (3, 41, 70, 70)
+  Trials required: 1
+  Elapsed time: 16.793931
+Certifying seed, case (10, 11, 70, 70)
+  Trials required: 1
+  Elapsed time: 16.628879
+Certifying seed, case (2, 71, 71, 71)
+  Trials required: 1
+  Elapsed time: 16.217646
+Certifying seed, case (7, 16, 71, 71)
+  Trials required: 1
+  Elapsed time: 18.070666
+Certifying seed, case (5, 23, 71, 71)
+  Trials required: 1
+  Elapsed time: 17.801957
+Certifying seed, case (8, 14, 71, 71)
+  Trials required: 1
+  Elapsed time: 17.753117
+Certifying seed, case (2, 72, 72, 72)
+  Trials required: 1
+  Elapsed time: 17.555055
+Certifying seed, case (6, 19, 72, 72)
+  Trials required: 1
+  Elapsed time: 18.635869
+Certifying seed, case (3, 42, 72, 72)
+  Trials required: 1
+  Elapsed time: 19.171830
+Certifying seed, case (4, 30, 72, 72)
+  Trials required: 1
+  Elapsed time: 19.360350
+Certifying seed, case (2, 73, 73, 73)
+  Trials required: 1
+  Elapsed time: 19.031698
+Certifying seed, case (2, 74, 74, 74)
+  Trials required: 1
+  Elapsed time: 21.348250
+Certifying seed, case (3, 43, 74, 74)
+  Trials required: 1
+  Elapsed time: 22.758254
+Certifying seed, case (5, 24, 74, 74)
+  Trials required: 1
+  Elapsed time: 23.666540
+Certifying seed, case (2, 75, 75, 75)
+  Trials required: 1
+  Elapsed time: 22.310104
+Certifying seed, case (4, 31, 75, 75)
+  Trials required: 1
+  Elapsed time: 24.260525
+Certifying seed, case (9, 13, 75, 75)
+  Trials required: 1
+  Elapsed time: 24.463315
+Certifying seed, case (3, 44, 75, 75)
+  Trials required: 1
+  Elapsed time: 25.386918
+Certifying seed, case (6, 20, 76, 76)
+  Trials required: 1
+  Elapsed time: 26.097010
+Certifying seed, case (2, 76, 76, 76)
+  Trials required: 1
+  Elapsed time: 24.441138
+Certifying seed, case (7, 17, 76, 76)
+  Trials required: 1
+  Elapsed time: 26.093028
+Certifying seed, case (2, 77, 77, 77)
+  Trials required: 1
+  Elapsed time: 26.336392
+Certifying seed, case (8, 15, 77, 77)
+  Trials required: 1
+  Elapsed time: 28.272704
+Certifying seed, case (3, 45, 77, 77)
+  Trials required: 1
+  Elapsed time: 29.151116
+Certifying seed, case (10, 12, 77, 77)
+  Trials required: 1
+  Elapsed time: 28.723419
+Certifying seed, case (4, 32, 77, 77)
+  Trials required: 1
+  Elapsed time: 28.435426
+Certifying seed, case (5, 25, 77, 77)
+  Trials required: 1
+  Elapsed time: 29.608617
+Certifying seed, case (2, 78, 78, 78)
+  Trials required: 1
+  Elapsed time: 28.485456
+Certifying seed, case (11, 11, 78, 78)
+  Trials required: 1
+  Elapsed time: 30.399832
+Certifying seed, case (2, 79, 79, 79)
+  Trials required: 1
+  Elapsed time: 31.052923
+Certifying seed, case (3, 46, 79, 79)
+  Trials required: 1
+  Elapsed time: 33.611119
+Certifying seed, case (6, 21, 79, 79)
+  Trials required: 1
+  Elapsed time: 33.833577
+Certifying seed, case (2, 80, 80, 80)
+  Trials required: 1
+  Elapsed time: 33.139731
+Certifying seed, case (4, 33, 80, 80)
+  Trials required: 1
+  Elapsed time: 35.761315
+Certifying seed, case (7, 18, 80, 80)
+  Trials required: 1
+  Elapsed time: 36.000667
+Certifying seed, case (2, 81, 81, 81)
+  Trials required: 1
+  Elapsed time: 35.466031
+Certifying seed, case (3, 47, 81, 81)
+  Trials required: 1
+  Elapsed time: 38.413004
+Certifying seed, case (5, 26, 81, 81)
+  Trials required: 1
+  Elapsed time: 38.229705
+Certifying seed, case (9, 14, 81, 81)
+  Trials required: 1
+  Elapsed time: 38.806815
+Certifying seed, case (2, 82, 82, 82)
+  Trials required: 1
+  Elapsed time: 38.498661
+Certifying seed, case (8, 16, 82, 82)
+  Trials required: 1
+  Elapsed time: 40.987906
+Certifying seed, case (4, 34, 82, 82)
+  Trials required: 1
+  Elapsed time: 42.066054
+Certifying seed, case (3, 48, 82, 82)
+  Trials required: 1
+  Elapsed time: 42.232223
+Certifying seed, case (2, 83, 83, 83)
+  Trials required: 1
+  Elapsed time: 41.687344
+Certifying seed, case (6, 22, 83, 83)
+  Trials required: 1
+  Elapsed time: 45.545450
+Certifying seed, case (2, 84, 84, 84)
+  Trials required: 1
+  Elapsed time: 44.683203
+Certifying seed, case (5, 27, 84, 84)
+  Trials required: 1
+  Elapsed time: 47.757382
+Certifying seed, case (10, 13, 84, 84)
+  Trials required: 1
+  Elapsed time: 47.023277
+Certifying seed, case (3, 49, 84, 84)
+  Trials required: 1
+  Elapsed time: 48.833169
+Certifying seed, case (4, 35, 85, 85)
+  Trials required: 1
+  Elapsed time: 50.719925
+Certifying seed, case (7, 19, 85, 85)
+  Trials required: 1
+  Elapsed time: 51.753725
+Certifying seed, case (11, 12, 85, 85)
+  Trials required: 1
+  Elapsed time: 51.810126
+Certifying seed, case (3, 50, 86, 86)
+  Trials required: 1
+  Elapsed time: 55.039026
+Certifying seed, case (9, 15, 87, 87)
+  Trials required: 1
+  Elapsed time: 58.724149
+Certifying seed, case (5, 28, 87, 87)
+  Trials required: 1
+  Elapsed time: 59.713346
+Certifying seed, case (4, 36, 87, 87)
+  Trials required: 1
+  Elapsed time: 60.343615
+Certifying seed, case (6, 23, 87, 87)
+  Trials required: 1
+  Elapsed time: 60.796021
+Certifying seed, case (8, 17, 87, 87)
+  Trials required: 1
+  Elapsed time: 60.162519
+Certifying seed, case (3, 51, 87, 87)
+  Trials required: 1
+  Elapsed time: 61.342213
+Certifying seed, case (3, 52, 89, 89)
+  Trials required: 1
+  Elapsed time: 68.001829
+Certifying seed, case (7, 20, 89, 89)
+  Trials required: 1
+  Elapsed time: 68.891190
+Certifying seed, case (4, 37, 89, 89)
+  Trials required: 1
+  Elapsed time: 70.948321
+Certifying seed, case (5, 29, 90, 90)
+  Trials required: 1
+  Elapsed time: 73.978773
+Certifying seed, case (10, 14, 91, 91)
+  Trials required: 1
+  Elapsed time: 75.551390
+Certifying seed, case (3, 53, 91, 91)
+  Trials required: 1
+  Elapsed time: 78.142056
+Certifying seed, case (6, 24, 91, 91)
+  Trials required: 1
+  Elapsed time: 78.820428
+Certifying seed, case (4, 38, 92, 92)
+  Trials required: 1
+  Elapsed time: 85.184406
+Certifying seed, case (8, 18, 93, 93)
+  Trials required: 1
+  Elapsed time: 88.384118
+Certifying seed, case (11, 13, 93, 93)
+  Trials required: 1
+  Elapsed time: 88.645078
+Certifying seed, case (3, 54, 93, 93)
+  Trials required: 1
+  Elapsed time: 89.078775
+Certifying seed, case (9, 16, 93, 93)
+  Trials required: 1
+  Elapsed time: 88.999381
+Certifying seed, case (5, 30, 93, 93)
+  Trials required: 1
+  Elapsed time: 90.863709
+Certifying seed, case (12, 12, 93, 93)
+  Trials required: 1
+  Elapsed time: 88.594107
+Certifying seed, case (7, 21, 94, 94)
+  Trials required: 1
+  Elapsed time: 96.054759
+Certifying seed, case (4, 39, 94, 94)
+  Trials required: 1
+  Elapsed time: 96.999600
+Certifying seed, case (3, 55, 94, 94)
+  Trials required: 1
+  Elapsed time: 97.510438
+Certifying seed, case (6, 25, 95, 95)
+  Trials required: 1
+  Elapsed time: 103.050417
+Certifying seed, case (3, 56, 96, 96)
+  Trials required: 1
+  Elapsed time: 111.550575
+Certifying seed, case (5, 31, 96, 96)
+  Trials required: 1
+  Elapsed time: 112.852877
+Certifying seed, case (4, 40, 97, 97)
+  Trials required: 1
+  Elapsed time: 116.959517
+Certifying seed, case (10, 15, 97, 97)
+  Trials required: 1
+  Elapsed time: 117.100986
+Certifying seed, case (8, 19, 98, 98)
+  Trials required: 1
+  Elapsed time: 122.121982
+Certifying seed, case (7, 22, 99, 99)
+  Trials required: 1
+  Elapsed time: 130.616487
+Certifying seed, case (6, 26, 99, 99)
+  Trials required: 1
+  Elapsed time: 132.083607
+Certifying seed, case (9, 17, 99, 99)
+  Trials required: 1
+  Elapsed time: 132.857875
+Certifying seed, case (4, 41, 99, 99)
+  Trials required: 1
+  Elapsed time: 135.844656
+Certifying seed, case (5, 32, 100, 100)
+  Trials required: 1
+  Elapsed time: 141.168981
+Certifying seed, case (11, 14, 100, 100)
+  Trials required: 1
+  Elapsed time: 140.992529
+Certifying seed, case (12, 13, 101, 101)
+  Trials required: 1
+  Elapsed time: 151.830535
+Certifying seed, case (4, 42, 102, 102)
+  Trials required: 1
+  Elapsed time: 160.232640
+Certifying seed, case (6, 27, 103, 103)
+  Trials required: 1
+  Elapsed time: 169.341834
+Certifying seed, case (5, 33, 103, 103)
+  Trials required: 1
+  Elapsed time: 170.391761
+Certifying seed, case (7, 23, 103, 103)
+  Trials required: 1
+  Elapsed time: 171.228922
+Certifying seed, case (8, 20, 103, 103)
+  Trials required: 1
+  Elapsed time: 171.141954
+Certifying seed, case (10, 16, 104, 104)
+  Trials required: 1
+  Elapsed time: 180.019301
+Certifying seed, case (9, 18, 105, 105)
+  Trials required: 1
+  Elapsed time: 191.292567
+Certifying seed, case (6, 28, 106, 106)
+  Trials required: 1
+  Elapsed time: 206.550304
+Certifying seed, case (11, 15, 107, 107)
+  Trials required: 1
+  Elapsed time: 217.399883
+Certifying seed, case (7, 24, 108, 108)
+  Trials required: 1
+  Elapsed time: 226.998364
+Certifying seed, case (8, 21, 108, 108)
+---------------------------------------------------------
+Starting new session.
+Certifying seed, case (8, 21, 108, 108)
+  Trials required: 1
+  Elapsed time: 230.652135
+Certifying seed, case (12, 14, 110, 110)
+  Trials required: 1
+  Elapsed time: 249.941715
+Certifying seed, case (13, 13, 110, 110)
+  Trials required: 1
+  Elapsed time: 249.784246
+---------------------------------------------------------
+Starting new session.

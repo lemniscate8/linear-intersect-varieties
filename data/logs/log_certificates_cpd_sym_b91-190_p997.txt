@@ -1,0 +1,24 @@
+---------------------------------------------------------
+Starting new session.
+Failed to find ./data/certificates/cpd_sym_b91-190_p997.csv with previous records so starting new file.
+Certifying seed, case (15, 92, 92)
+  Trials required: 1
+  Elapsed time: 78.640213
+Certifying seed, case (16, 104, 104)
+  Trials required: 1
+  Elapsed time: 170.869542
+Certifying seed, case (17, 118, 118)
+  Trials required: 1
+  Elapsed time: 374.732043
+Certifying seed, case (18, 132, 132)
+  Trials required: 1
+  Elapsed time: 704.729728
+Certifying seed, case (19, 147, 147)
+  Trials required: 1
+  Elapsed time: 1231.451074
+Certifying seed, case (20, 163, 163)
+  Trials required: 1
+  Elapsed time: 2124.373563
+Certifying seed, case (21, 180, 180)
+  Trials required: 1
+  Elapsed time: 3789.301801

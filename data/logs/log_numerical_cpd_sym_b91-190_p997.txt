@@ -1,0 +1,20 @@
+---------------------------------------------------------
+Starting new session.
+Failed to find ./data/numerical/cpd_sym_b91-190_p997.csv with previous records so starting new file.
+Running numerics, case (15, 92, 92)
+  Elapsed time: 13.778139
+Running numerics, case (16, 104, 104)
+  Elapsed time: 27.628756
+Running numerics, case (17, 118, 118)
+---------------------------------------------------------
+Starting new session.
+Running numerics, case (17, 118, 118)
+  Elapsed time: 54.375878
+Running numerics, case (18, 132, 132)
+  Elapsed time: 103.410468
+Running numerics, case (19, 147, 147)
+  Elapsed time: 199.181412
+Running numerics, case (20, 163, 163)
+  Elapsed time: 367.739732
+Running numerics, case (21, 180, 180)
+  Elapsed time: 710.011046
