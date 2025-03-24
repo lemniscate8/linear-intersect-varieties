@@ -93,7 +93,7 @@ def exchange(mset, val_out, val_in):
     else:
         mset_arr[(loc_in + 1) : loc_out] = mset_arr[loc_in : (loc_out - 1)]
         mset_arr[loc_in] = val_in
-    return tuple(mset_arr)
+    return tuple(mset_arr.tolist())
 
 
 # Dimension of embedding space
@@ -159,25 +159,34 @@ def sv_poly_matrix(dims, mults):
     monomial_lookup = sv_monomial_dictionary(dims, mults)
     poly_mat = sparse.lil_array((num_rows, num_cols), dtype=int)
     for i, (node1, node2) in enumerate(sv_poly_generator(dims, mults)):
-        # print(node1, node2)
         poly_mat[i, monomial_lookup[node1]] = 1
         poly_mat[i, monomial_lookup[node2]] = -1
     return poly_mat
+
+
+# Using a function that consumes polynomial codes produce a grading on
+# the polynomials that cut out a Segre-Veronese variety
+def sv_poly_grading(dims, mults, level_function):
+    num_rows = sv_independent_poly_count(dims, mults)
+    level_set = np.zeros((num_rows), dtype=np.uint)
+    for i, code in enumerate(sv_poly_generator(dims, mults)):
+        level_set[i] = level_function(code)
+    return level_function
 
 
 def print_sv(dims, mults=None, latex=False):
     if latex:
         if mults is None or np.all(np.array(mults) == 1):
             return (
-                "\operatorname{SV}(\mathbb{P}^{"
-                + "},\mathbb{P}^{".join([str(d - 1) for d in dims])
+                "\\operatorname{SV}(\\mathbb{P}^{"
+                + "},\\mathbb{P}^{".join([str(d - 1) for d in dims])
                 + "})"
             )
         return (
             "SV_{"
             + ",".join([str(m) for m in mults])
-            + "}(\mathbb{P}^{"
-            + "},\mathbb{P}^{".join([str(d - 1) for d in dims])
+            + "}(\\mathbb{P}^{"
+            + "},\\mathbb{P}^{".join([str(d - 1) for d in dims])
             + "})"
         )
     if mults is None or np.all(np.array(mults) == 1):
