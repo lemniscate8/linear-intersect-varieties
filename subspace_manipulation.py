@@ -8,9 +8,12 @@ import segre_veronese_ideal_generation as ig
 rng = np.random.default_rng()
 
 
+# Helper function for computing general Khatri-Rhao products including no
+# redundancy for higher multiplicies
 def khatri_rhao_products(factors, mults=None):
+    factors_type = factors[0].dtype
     if (mults is None) or (np.all(np.array(mults, dtype=int) == 1)):
-        tensors = np.ones((1, factors[0].shape[1]))
+        tensors = np.ones((1, factors[0].shape[1]), dtype=factors_type)
         for factor_mat in factors:
             tensors = khatri_rao(tensors, factor_mat)
         return tensors
@@ -20,6 +23,8 @@ def khatri_rhao_products(factors, mults=None):
     return khatri_rhao_products(bases)
 
 
+# Compute repeated Khatri-Rhao products but only keep elements in symmetric
+# tensors that are not redundant
 def symmetric_khatri_rhao(basis, k):
     if k == 0:
         return np.ones((1, basis.shape[1]))
@@ -38,6 +43,8 @@ def symmetric_khatri_rhao(basis, k):
     return prod
 
 
+# Compute repeated tensor products or symmetric tensor products (vee) while
+# saving in compact form
 def tensor_products(matrices, mults=None):
     if (mults is None) or (np.all(np.array(mults, dtype=int) == 1)):
         tensor = 1
@@ -52,9 +59,11 @@ def tensor_products(matrices, mults=None):
 
 
 # Computes the symmetric lift of a basis
-# Note: the basis must either be a dense array or sparse array, sparse matrices
-# will cause and error
+# Note: the basis must either be a dense array or sparse array, sparse _matrices_
+# will cause an error
 def symmetric_lift(basis, k):
+    bool_basis = basis.dtype == np.bool
+
     if k == 1:
         return basis
     nrow, ncol = basis.shape
@@ -85,12 +94,21 @@ def symmetric_lift(basis, k):
             row_col_selection = basis[
                 row_iter[:, index, None], col_iter[:, perm[index]]
             ]
-            prod = row_col_selection * prod
-        lifted_basis += prod
+            if bool_basis:
+                prod = row_col_selection & prod
+            else:
+                prod = row_col_selection * prod
+        if bool_basis:
+            lifted_basis ^= prod
+        else:
+            lifted_basis += prod
         k_fact += 1
+    if bool_basis or np.issubdtype(basis.dtype, np.integer):
+        return lifted_basis
     return lifted_basis / k_fact
 
 
+# Weights for switching from canonical Veronese embedding to a Segre embedding
 def symmetric_weights(basis_dim, k):
     num_entries = int(binom(basis_dim + k - 1, k))
     col_iter = itertools.combinations_with_replacement(range(basis_dim), k)
@@ -103,8 +121,8 @@ def symmetric_weights(basis_dim, k):
     return factorial(weights)
 
 
-# Produces a tall or square matrix that is a look up table balanced flattening
-# of a symmetric tensor
+# Produces a tall or square matrix that is a look up table fora balanced
+# flattening of a symmetric tensor
 def symmetric_flattening_lut(flat_dim, mult):
     if mult == 1:
         return np.arange(flat_dim)
@@ -131,6 +149,7 @@ def symmetric_flattening_lut(flat_dim, mult):
     return lut_matrix
 
 
+# Generalization of symmetric flattening to work for any pattern of modes
 def tensor_flattening_pattern(dims, mults, row_modes):
     mult1 = np.array(row_modes, dtype=int)
     mult2 = np.subtract(mults, row_modes)
@@ -194,11 +213,14 @@ def partial_segre_expansion(dims, mults, expansion_scheme):
     return indicies
 
 
-# Greedy matching vectors by finding angles between all pairs
+# Greedy matching vectors by finding cosine similarity between pairs
 def greedy_match_directions(dirs1, dirs2):
     nvecs1 = dirs1 / np.linalg.norm(dirs1, axis=0, keepdims=True)
     nvecs2 = dirs2 / np.linalg.norm(dirs2, axis=0, keepdims=True)
     dot_array = np.sum(nvecs1[:, :, None] * np.conj(nvecs2)[:, None, :], axis=0)
+    # Clip values since rounding error occasionally produces value out of
+    # bounds for large vectors
+    dot_array = np.clip(dot_array, a_min=-1, a_max=1)
     work_table = np.abs(dot_array)
     num_pairs = min(dot_array.shape)
     permutations = np.zeros((2, num_pairs), dtype=int)
@@ -211,15 +233,15 @@ def greedy_match_directions(dirs1, dirs2):
     return permutations, dot_array
 
 
-# Get array of angles between lines after greedy matchings
+# Get array of absolute cosine similarities for the greedy matching
 def similarity_between(directions1, directions2):
     permute, dot_array = greedy_match_directions(directions2, directions1)
     return np.abs(dot_array[permute[0], permute[1]])
 
 
-# Generate a random subspace spanned by R unit vectors of which S are flattened
-# rank-1 tensors and R-S are generic vectors
-def generateXVsubspace(R, S, dims, mults, rng=rng):
+# Generate a random subspace spanned by R unit vectors of which first S are
+# flattened rank-1 tensors and columns (S+1) to R are generic vectors
+def generate_XV_subspace(R, S, dims, mults, rng=rng):
     factors = [rng.normal(size=(d, S)) for d in dims]
     planted = khatri_rhao_products(factors, mults)
     basis = rng.normal(size=(planted.shape[0], R))
@@ -228,65 +250,25 @@ def generateXVsubspace(R, S, dims, mults, rng=rng):
     return basis, factors
 
 
+# Computation of the M matrix when recovering solutions is not necessary
+def get_unplanted_lift_segment(R, S, dims, mults, rng=rng):
+    subspace, _ = generate_XV_subspace(R, S, dims, mults, rng=rng)
+    lift = symmetric_lift(subspace, 2)
+    if S > 0:
+        plant_ind = np.arange(start=(R + 1), stop=(R - S + 1), step=-1)
+        plant_ind[0] = 0
+        lift_ind = np.cumsum(plant_ind)
+        return np.delete(lift, lift_ind, axis=1)
+    else:
+        return lift
+
+
+# TODO: rework this section to do a partial lift so it is easier to compute the
+# M matrix
+
+
 if __name__ == "__main__":
-    # basis = np.array([[1, 2, 0], [0, 1, 1]])
-    # print(basis)
-    # basis_lift = symmetric_lift2(basis)
-    # print(basis_lift)
-    # arr = np.array(list(itertools.combinations_with_replacement(range(3), 2)))
-    # print(arr)
-    # print(list(itertools.combinations_with_replacement(range(3), 2)))
-    # basis = np.array([[1, 2], [0, 1], [1, 0]])
-    # sp_basis = sparse.csr_array(basis)
-    # print(basis)
-
-    # # Test symmetric lift
-    # basis2 = symmetric_lift(basis, 2)
-    # print(basis2)
-    # sp_basis2 = symmetric_lift(sp_basis, 2)
-    # print(sp_basis2.data)
-    # print(sp_basis2.toarray())
-
-    # # Test symmetric khatri-rhao
-    # kr2 = symmetric_khatri_rhao(basis, 2)
-    # print(kr2)
-    # sp_kr2 = symmetric_khatri_rhao(sp_basis, 2)
-    # print(sp_kr2.toarray())
-
-    # # Test tensor product
-    # tensors = tensor_products([basis, basis])
-    # print(tensors)
-    # sp_tensors = tensor_products([sp_basis, sp_basis])
-    # print(type(sp_tensors))
-
-    # dim = 3
-    # mult = 3
-    # rng = np.random.default_rng()
-    # sym_tens_vals = rng.normal(size=int(binom(dim + mult - 1, mult)))
-    # print(sym_tens_vals)
-    # lut = tensor_flattening_pattern([dim], [mult], [1])
-    # print(lut)
-    # print(sym_tens_vals[lut])
-    # lut1 = tensor_flattening_pattern([3], [3], [1])
-    # print(lut1)
-    # lut2 = tensor_flattening_pattern([4, 3], [1, 1], [0, 1])
-    # print(lut2)
-    # print(np.arange(12).reshape((4, 3)))
-    # lut3 = tensor_flattening_pattern([3], [2], [1])
-    # lut = tensor_flattening_pattern([3, 3], [2, 1], [0, 1])
-    # factors = [rng.normal(size=(3, 1)) for i in range(2)]
-    # print(factors)
-    # tensor = tensor_products(factors, [2, 1])
-    # # print(tensor)
-    # flattened = tensor[lut, 0]
-    # print(flattened[0, :] / flattened[1, :])
-    # print(flattened[:, 0] / flattened[:, 1])
-    partition = np.array([[1], [1], [1]])
-    print(partition)
-    ind = partial_segre_expansion([2], [3], [[2, 1]])
-    # ind = partial_segre_expansion(
-    #     [2, 2],
-    #     [3, 1],
-    #     [[1, 1, 1], [0, 0, 1]],
-    # )
-    print(ind)
+    rng = np.random.default_rng(0)
+    basis = rng.normal(size=(5, 4))
+    symmetric_lift(basis, 2)
+    pass
