@@ -11,17 +11,6 @@ import warnings
 rng = np.random.default_rng()
 
 
-# def normalized_factors(factors):
-#     weights = np.ones(factors[0].shape[1])
-#     normalized = []
-#     for F in factors:
-#         norms = np.linalg.norm(F, axis=0)
-#         normalized.append(F / norms[None, :])
-#         weights *= norms
-#     order = np.argsort(-weights)
-#     return weights, [F[:, order] for F in normalized]
-
-
 # Return a tri-partition of multiplicities used to map a higher-order tensor
 # to a third-order tensor
 # Default method uses one multiplicity of last mode for 3rd mode, splits even
@@ -68,29 +57,49 @@ def jennrich_partial_decomp(
     mults_arr = np.array(mults)
     if expansion_scheme is None:
         expansion_scheme = expansion_method(dims, mults)
+        # print(expansion_scheme)
     expand_arr = np.array(expansion_scheme)
     if expand_arr.shape[1] != 3 or not np.all(mults_arr == np.sum(expand_arr, axis=1)):
-        raise Exception("Tensor extraction must be a tri-partition of tensor modes.")
+        raise Exception(
+            "Tensor expansion array must be a tri-partition of tensor modes."
+        )
 
     # First matrization
     fp1 = suma.tensor_flattening_pattern(dims, mults, expand_arr[:, 2])
+
     matrized_tensor = flat_tensor[fp1]
     remain_mults = mults_arr - expand_arr[:, 2]
 
     # Two random slices
     slab_count = matrized_tensor.shape[1]
-    weights = rng.normal(size=(slab_count, 2))
-    if flat_tensor.dtype == complex:
-        weights = 0.5 * weights.astype(complex)
-        weights += 0.5j * rng.normal(size=(slab_count, 2))
-    slices = matrized_tensor @ weights
-    # Matrize slices to diagonalize
     fp2 = suma.tensor_flattening_pattern(dims, remain_mults, expand_arr[:, 1])
-    factor1, factor2, dists = simultaneous_diagonalize(
-        slices[fp2, 0], slices[fp2, 1], atol=atol
-    )
-    # print("Factor 1 shape:", factor1.shape)
-    # Use least squares to estimate remaining factors
+
+    dists = None
+    if slab_count <= 1:
+        # If tensor has degenerate shape, find best rank-1 approximation via SVD
+        matrix = matrized_tensor[fp2, 0]
+        u, s, vh = lg.svd(matrix)
+        factor1 = s[0] * u[:, 0:1]
+        factor2 = vh[0:1, :].transpose()
+    else:
+        weights = rng.normal(size=(slab_count, 2))
+        if flat_tensor.dtype == complex:
+            weights = 0.5 * weights.astype(complex)
+            weights += 0.5j * rng.normal(size=(slab_count, 2))
+        weights /= np.linalg.norm(weights, axis=1, keepdims=True)
+        slices = matrized_tensor @ weights
+
+        # Matrize slices to diagonalize
+
+        factor1, factor2, dists = simultaneous_diagonalize(
+            slices[fp2, 0],
+            slices[fp2, 1],
+            atol=atol,
+            match_tol=atol,
+            expected_rank=expected_rank,
+        )
+        # print("Factor 1 shape:", factor1.shape)
+        # Use least squares to estimate remaining factors
     factor3, res = estimate_remaining_factor(
         (factor1, factor2), matrized_tensor, dims, remain_mults, expand_arr[:, 0:2]
     )
@@ -108,9 +117,8 @@ def jennrich_partial_decomp(
     return factors, diagnostics, expand_arr
 
 
-def simultaneous_diagonalize(
-    arr1, arr2, atol=1e-9, match_tol=1.0e-9, expected_rank=None
-):
+# Subroutine to perform simultaneous diagonalization for two matrices
+def simultaneous_diagonalize(arr1, arr2, atol=1e-9, match_tol=1e-9, expected_rank=None):
     m1, *_ = lg.lstsq(arr1.T, arr2.T)
     m1eig, m1vecs = lg.eig(m1.T)
     m2, *_ = lg.lstsq(arr2, arr1)
@@ -136,9 +144,9 @@ def simultaneous_diagonalize(
     if expected_rank is None:
         keepers = match_dists < match_tol
         if np.all(~keepers):
-            raise Exception(
+            raise np.linalg.LinAlgError(
                 "No eigenvalues match above tolerance in simultaneous diagonalization.",
-                "no_simultaneous_diagonalization",
+                match_dists,
             )
     else:
         keepers = np.s_[:]
@@ -149,8 +157,7 @@ def simultaneous_diagonalize(
     )
 
 
-# Match eigenvalues from Jennrich's algorithm by computing all pairwise product
-# and finding rows and columns of entries closest to unity
+# Match eigenvalues from Jennrich's algorithm robustly
 def greedy_match_eigenvalues(eigs1, eigs2, num_matches=None):
     # TODO: don't know if this metric is optimal given the ways noise will be
     # multiplicative if it occurs
@@ -169,7 +176,7 @@ def greedy_match_eigenvalues(eigs1, eigs2, num_matches=None):
 
 
 # Use a khatri-rhao product of first two factors of the partial decomposition
-# to estimate the final factor
+# and linear least squares to estimate the final factor
 def estimate_remaining_factor(factors, matrized_tensor, dims, mults, expansion_scheme):
     segre_expansion = suma.partial_segre_expansion(dims, mults, expansion_scheme)
     expanded = matrized_tensor[segre_expansion, :]
@@ -178,10 +185,8 @@ def estimate_remaining_factor(factors, matrized_tensor, dims, mults, expansion_s
     return last_factors.transpose(), res
 
 
-# Expands the flat tensor to have redundancies matching the partial
+# Expand the flat tensor to have redundancies matching the partial
 # decomposition then computes the L2 norm between
-# Note: this "overweights" some basis elements effectively since entries would
-# be identified in the full decomposition
 def partial_decomp_error(factors, flat_tensor, dims, mults, expansion):
     expansion = suma.partial_segre_expansion(dims, mults, expansion)
     expanded_flat = flat_tensor[expansion]
@@ -200,19 +205,7 @@ def extract_kernel_naive(sparse_projector, dense_basis, expected_solutions):
     return lg.null_space(dense_combos), True
 
 
-# Methods for when we know that the first element in the lifted subspace
-# should have a coefficient of 1 on it
-# def extract_sparse_projective_kernel(
-#     sparse_projector, sparse_basis, expected_solutions
-# ):
-#     sparse_combos = sparse_projector @ sparse_basis
-#     # Extract first column as b, rest is A
-#     b = sparse_combos[:, :1].toarray()
-#     A = sparse_combos[:, 1:]
-#     x1, istop, *_ = sparse.linalg.lsqr(A, b)
-#     return
-
-
+# WIP method for decomposing higher order tensors
 def jennrich_total_decomp(
     flat_tensor,
     dims,
@@ -232,20 +225,16 @@ def jennrich_total_decomp(
         rng=rng,
     )
     # TODO: do full decomposition
-
-
-def decompose_pure_tensor(flat_tensor, dims, mults):
-    # TODO: recursive decomposition for a pure tensor
     pass
 
 
+# An implementation of the JLV algorithm
 # Recovers planted solutions in a basis by finding all linear combinations
 # that result in partially symmetric rank-1 tensors of specified dimension
 def demix_subspace(
     basis,
     dims,
     mults,
-    recurse=0,
     kernel_method=extract_kernel_naive,
     expected_solutions=None,
     rng=None,
@@ -278,12 +267,6 @@ def demix_subspace(
     if kernel_dim == 0:
         # Code 1 means no planted solutions detected, only trivial intersection
         return np.zeros((subspace_dim)), (1, None)
-    # print("Kernel dim is ", kernel_dim)
-    if (recurse > 0) and (kernel_dim > subspace_dim):
-        coefs, diagnostics = demix_subspace(
-            kernel_basis, [subspace_dim], [2], recurse=recurse - 1, rng=rng
-        )
-        return kernel_basis @ coefs, diagnostics
     flat_ktensor = kernel_basis.flatten()
     ktensor_dims = [subspace_dim, kernel_dim]
     ktensor_mults = [2, 1]
@@ -305,102 +288,3 @@ def demix_subspace(
 
     # Code 0 indicates some planted solutions were found and decomposed
     return factors[0], (0, diagnostics)
-
-
-if __name__ == "__main__":
-    rng = np.random.default_rng(0)
-
-    # # Standard segre product
-    # dims = [4, 3, 5]
-    # mults = [1, 1, 1]
-    # rank = 6 # Overcomplete, should fail
-    # factors = [rng.normal(size=(d, rank)) for d in dims]
-    # nfacts = [factor / np.linalg.norm(factor, axis=0) for factor in factors]
-    # for fact in nfacts:
-    #     print(fact)
-    # tensor_prods = suma.khatri_rhao_products(nfacts, mults)
-    # # flattening = suma.tensor_flattening_pattern([4, 3, 2], [1, 1, 1], [0, 0, 1])
-    # # one_tensor = tensor_prods[flattening, 0]
-    # # print(one_tensor[:, 0] / one_tensor[:, 1])
-    # flat_tensor = np.sum(tensor_prods, axis=1)
-    # extraction = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-    # (
-    #     factors,
-    #     diagnostics,
-    #     *_,
-    # ) = jennrich_partial_decomp(flat_tensor, dims, mults, extraction, rng=rng)
-    # print([factor.shape for factor in factors])
-    # print(diagnostics)
-
-    # # Veronese-Segre product
-    # dims = [4, 4]
-    # mults = [2, 1]
-    # rank = 5
-    # factors = [
-    #     0.5 * rng.normal(size=(d, rank)) + 0.5j * rng.normal(size=(d, rank))
-    #     for d in dims
-    # ]
-    # nfacts = [factor / np.linalg.norm(factor, axis=0) for factor in factors]
-    # for fact in nfacts:
-    #     print(fact)
-    # tensor_prods = suma.khatri_rhao_products(nfacts, mults)
-
-    # # print(one_tensor[:, 0] / one_tensor[:, 1])
-    # flat_tensor = np.sum(tensor_prods, axis=1)
-    # extraction = [[1, 1, 0], [0, 0, 1]]
-    # (
-    #     factors,
-    #     diagnostics,
-    #     *_,
-    # ) = jennrich_partial_decomp(flat_tensor, dims, mults, extraction, rng=rng)
-    # print([factor.shape for factor in factors])
-    # print(diagnostics)
-    # print(suma.similarity_between(nfacts[0], factors[0]))
-    # print(suma.similarity_between(nfacts[0], factors[1]))
-    # print(suma.similarity_between(nfacts[1], factors[2]))
-
-    # # Test flattening of tensors
-    # dims = [4, 5]
-    # mults = [1, 1]
-    # rank = 3
-    # factors = [rng.normal(size=(d, rank)) for d in dims]
-    # tensor = suma.khatri_rhao_products(factors)
-    # tdims = dims + [rank]
-    # print(tdims)
-    # tmults = mults + [1]
-    # factors, diagnostics, expansion = jennrich_partial_decomp(
-    #     tensor.flatten(), tdims, tmults
-    # )
-    # print(expansion)
-    # print(diagnostics)
-    # print([factor.shape for factor in factors])
-
-    # Test subspace demixing
-    # dims = [5, 5]
-    # mults = [1, 1]
-    # R = ig.max_subspace_demixable(dims, mults)
-    # # R = 4
-    # plant_ratio = 1
-    # S = int(R * plant_ratio)
-    # # S = 3
-    # print(R, S)
-    # raw_basis, factors = suma.generateXVsubspace(R, S, dims, mults)
-    # column_mixer = rng.normal(size=(R, R))
-    # basis = raw_basis @ column_mixer
-    # coefs, diagnostics = demix_subspace(basis, dims, mults, rng=rng)
-    # print("Coef shape:", coefs.shape)
-    # print(diagnostics)
-    # recovered_plants = basis @ coefs
-
-    # print(column_mixer @ coefs)
-    # matching = suma.similarity_between(raw_basis[:, :S], recovered_plants)
-    # print(matching)
-
-    # for val in itertools.combinations_with_replacement(range(3), 3):
-    #     print(val)
-    # index_iter = itertools.combinations_with_replacement(range(4), 2)
-    # vals = tuple(zip(*index_iter)
-    # print(np.arange(27).reshape((3, 3, 3))[vals])
-    # for val in index_iter:
-    #     print(val)
-    #     print(val[1] + ((val[0] * (val[0] + 1)) // 2))
