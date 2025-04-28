@@ -189,7 +189,10 @@ def list_overbound_sym_subshapes(upper_bound):
         block[:, 1] = max_symmetric_dimensions(m, block[:, 2]).astype(np.uint) + 1
         blocks.append(block)
     all_shapes = np.vstack(blocks)
-    return all_shapes[all_shapes[:, 1] <= upper_bound]
+    all_shapes = all_shapes[all_shapes[:, 1] <= upper_bound]
+    id_bound = all_shapes[:, 0] * (all_shapes[:, 0] + 1) // 2 - all_shapes[:, 0]
+    identifiable = all_shapes[:, 1] <= id_bound
+    return all_shapes[identifiable, :]
 
 
 # ----------------------- Certification procedures -----------------------
@@ -257,7 +260,7 @@ def find_certified_subspace_seeds(
                 {"seed": seed, "det_mod" + str(modulus): det, "rm_rows": excluded_rows}
             )
             log.write("  Trials required: " + str(seed + 1) + "\n")
-        except np.exceptions.TooHardError as err:
+        except (np.exceptions.TooHardError, ValueError) as err:
             log.write("  " + str(err) + "\n")
 
         row = pd.DataFrame([data], columns=frame_headers)
@@ -852,6 +855,7 @@ def run_default_tests():
 
 def analyze_data():
     p = 997
+    rng = np.random.default_rng(0)
     print("----- Original case ------")
     reg_cert_files = [
         "all_b60_p997.csv",
@@ -881,17 +885,17 @@ def analyze_data():
     numerics = pd.concat(reg_numerical_data, ignore_index=True)
     print("Numerical results")
     print("  Below conjectured bound")
+    print("    Total cases:", numerics.shape[0])
     print("    Minimum s_val:", np.min(numerics["s_val"]))
     print("    Max decomp error:", np.max(numerics["decomp_error"]))
     print("    Max matching error:", np.max(numerics["w"]))
     overbound = pd.read_csv(os.path.join("data", "numerical", "overbound_b60_p997.csv"))
     print("  Above conjectured bound")
+    print("    Total cases:", overbound.shape[0])
     print("    Minimum s_val:", np.min(overbound["s_val"]))
-    extra_elements = overbound["ker_dim"] - overbound["s"]
-
-    print("    Minimal extra elements:", np.min(extra_elements))
     print("    Min decomp error:", np.min(overbound["decomp_error"]))
     print("    Min matching error:", np.min(overbound["w"]))
+    print("    Average matching error:", np.mean(overbound["w"]))
     # Check predicted size of kernel
     m = overbound["m"]
     n = overbound["n"]
@@ -902,6 +906,25 @@ def analyze_data():
         "    Kernel deviations from prediction:", np.sum(kernel_prediction_excess != 0)
     )
 
+    # # Plotly plots
+    # overbound["kernel_excess"] = overbound["ker_dim"] - overbound["s"]
+    # overbound["kernel_excess_j"] = overbound["kernel_excess"] + rng.random(
+    #     size=overbound.shape[0]
+    # )
+    # decomp = overbound[overbound["s"] > 0]
+    # fig = px.scatter(
+    #     decomp,
+    #     x="kernel_excess_j",
+    #     y="w",
+    #     color="s",
+    #     labels={
+    #         "kernel_excess_j": "Excess dimension",
+    #         "w": "Worst matching error",
+    #         "s": "Number of planted matrices",
+    #     },
+    # )
+    # fig.show()
+
     print("\n----- Symmetric case ------")
     sym_cert_files = [
         "all_sym_b90_p997.csv",
@@ -910,7 +933,7 @@ def analyze_data():
     ]
     sym_cert_data = [
         pd.read_csv(os.path.join("data", "certificates", file))
-        for file in reg_cert_files
+        for file in sym_cert_files
     ]
     sym_certificates = pd.concat(sym_cert_data, ignore_index=True)
     print("Certifications")
@@ -929,20 +952,27 @@ def analyze_data():
     ]
     numerics = pd.concat(sym_numerical_data, ignore_index=True)
     print("Numerical results")
+
     print("  Below conjectured bound")
+    print("    Total cases:", numerics.shape[0])
     print("    Minimum s_val:", np.min(numerics["s_val"]))
     print("    Max decomp error:", np.max(numerics["decomp_error"]))
     print("    Max matching error:", np.max(numerics["w"]))
+    print("    Average matching error:", np.mean(numerics["w"]))
     overbound = pd.read_csv(
         os.path.join("data", "numerical", "overbound_sym_b90_p997.csv")
     )
+    sel = ((overbound["m"] == 2) & (overbound["R"] == 2)) | (
+        (overbound["m"] == 3) & (overbound["R"] == 4)
+    )
+    overbound_ident = overbound[~sel]
     print("  Above conjectured bound")
-    print("    Minimum s_val:", np.min(overbound["s_val"]))
-    extra_elements = overbound["ker_dim"] - overbound["s"]
-
-    print("    Minimal extra elements:", np.min(extra_elements))
-    print("    Min decomp error:", np.min(overbound["decomp_error"]))
-    print("    Min matching error:", np.min(overbound["w"]))
+    print("    Total cases:", overbound.shape[0])
+    print("    Identifiable cases:", overbound_ident.shape[0])
+    print("    Minimum s_val:", np.min(overbound_ident["s_val"]))
+    print("    Min decomp error:", np.min(overbound_ident["decomp_error"]))
+    print("    Min matching error:", np.min(overbound_ident["w"]))
+    print("    Average matching error:", np.mean(overbound_ident["w"]))
     # Check predicted size of kernel
     m = overbound["m"]
     R = overbound["R"]
@@ -953,5 +983,26 @@ def analyze_data():
     )
 
 
+def check_symmetric_identifiability(dim, R, s, seed):
+    dims = [dim]
+    mults = [2]
+    basis = generate_real_subspace(dims, mults, R, s, seed)
+    recovered, *diag = find_planted_tensors(
+        lg.orth(basis), dims, mults, 5, 1e-12, np.inf
+    )
+    print(dim, R, s, seed, *diag)
+    fp = suma.tensor_flattening_pattern(dims, mults, [1])
+    # print(recovered)
+    for i in range(recovered.shape[1]):
+        matrix = recovered[fp, i]
+        # print(matrix)
+        vals = lg.svdvals(matrix)
+        print(vals)
+
+
 if __name__ == "__main__":
+    # check_symmetric_identifiability(2, 2, 1, 0)
+    # check_symmetric_identifiability(3, 4, 3, 0)
     analyze_data()
+
+    # generate_certificates("all", 20, 7)
