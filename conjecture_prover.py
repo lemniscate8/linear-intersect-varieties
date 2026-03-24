@@ -794,7 +794,7 @@ def generate_labeled_table(save_name, m_max, n_max, bounds):
 # ---------------- Choice of parameters ----------------
 modulus = 997
 
-certified_all_bound = 80
+certified_all_bound = 60
 certified_part_bound = 120
 
 numerical_all_bound = 80
@@ -805,20 +805,7 @@ all_sym_bound = 90
 part_sym_bound = 190
 
 
-def run_default_tests():
-    # ---------------- Write latex table for test params ----------------
-    generate_labeled_table(
-        "proof_and_numerics_table",
-        40,
-        15,
-        bounds=[
-            certified_all_bound,
-            numerical_all_bound,
-            certified_part_bound,
-            numerical_part_bound,
-        ],
-    )
-
+def run_tests_from_paper():
     # ---------------- Main tests to run ----------------
     generate_certificates("all", certified_all_bound, modulus)
     generate_certificates(
@@ -839,18 +826,18 @@ def run_default_tests():
 
     # ---------------- Symmetric tests to run ----------------
 
-    generate_certificates("all_sym", all_sym_bound, modulus)
-    generate_certificates(
-        "cpd_sym", part_sym_bound, modulus, lower_bound=all_sym_bound + 1
-    )
-    generate_certificates(
-        "null_sym", part_sym_bound, modulus, lower_bound=all_sym_bound + 1
-    )
+    # generate_certificates("all_sym", all_sym_bound, modulus)
+    # generate_certificates(
+    #     "cpd_sym", part_sym_bound, modulus, lower_bound=all_sym_bound + 1
+    # )
+    # generate_certificates(
+    #     "null_sym", part_sym_bound, modulus, lower_bound=all_sym_bound + 1
+    # )
 
-    run_numerical_recovery("all_sym", all_sym_bound)
-    run_numerical_recovery("cpd_sym", part_sym_bound, lower_bound=all_sym_bound + 1)
-    run_numerical_recovery("null_sym", part_sym_bound, lower_bound=all_sym_bound + 1)
-    run_numerical_recovery("overbound_sym", all_sym_bound)
+    # run_numerical_recovery("all_sym", all_sym_bound)
+    # run_numerical_recovery("cpd_sym", part_sym_bound, lower_bound=all_sym_bound + 1)
+    # run_numerical_recovery("null_sym", part_sym_bound, lower_bound=all_sym_bound + 1)
+    # run_numerical_recovery("overbound_sym", all_sym_bound)
 
 
 def analyze_data():
@@ -925,62 +912,62 @@ def analyze_data():
     # )
     # fig.show()
 
-    print("\n----- Symmetric case ------")
-    sym_cert_files = [
-        "all_sym_b90_p997.csv",
-        "cpd_sym_b91-190_p997.csv",
-        "null_sym_b91-190_p997.csv",
-    ]
-    sym_cert_data = [
-        pd.read_csv(os.path.join("data", "certificates", file))
-        for file in sym_cert_files
-    ]
-    sym_certificates = pd.concat(sym_cert_data, ignore_index=True)
-    print("Certifications")
-    print("  Seeds")
-    seed_vals, seed_counts = np.unique(sym_certificates["seed"], return_counts=True)
-    print("    Seed values:", seed_vals)
-    print("    Seed counts:", seed_counts)
+    # print("\n----- Symmetric case ------")
+    # sym_cert_files = [
+    #     "all_sym_b90_p997.csv",
+    #     "cpd_sym_b91-190_p997.csv",
+    #     "null_sym_b91-190_p997.csv",
+    # ]
+    # sym_cert_data = [
+    #     pd.read_csv(os.path.join("data", "certificates", file))
+    #     for file in sym_cert_files
+    # ]
+    # sym_certificates = pd.concat(sym_cert_data, ignore_index=True)
+    # print("Certifications")
+    # print("  Seeds")
+    # seed_vals, seed_counts = np.unique(sym_certificates["seed"], return_counts=True)
+    # print("    Seed values:", seed_vals)
+    # print("    Seed counts:", seed_counts)
 
-    reg_num_files = [
-        "all_sym_b90_p997.csv",
-        "cpd_sym_b91-190_p997.csv",
-        "null_sym_b91-190_p997.csv",
-    ]
-    sym_numerical_data = [
-        pd.read_csv(os.path.join("data", "numerical", file)) for file in reg_num_files
-    ]
-    numerics = pd.concat(sym_numerical_data, ignore_index=True)
-    print("Numerical results")
+    # reg_num_files = [
+    #     "all_sym_b90_p997.csv",
+    #     "cpd_sym_b91-190_p997.csv",
+    #     "null_sym_b91-190_p997.csv",
+    # ]
+    # sym_numerical_data = [
+    #     pd.read_csv(os.path.join("data", "numerical", file)) for file in reg_num_files
+    # ]
+    # numerics = pd.concat(sym_numerical_data, ignore_index=True)
+    # print("Numerical results")
 
-    print("  Below conjectured bound")
-    print("    Total cases:", numerics.shape[0])
-    print("    Minimum s_val:", np.min(numerics["s_val"]))
-    print("    Max decomp error:", np.max(numerics["decomp_error"]))
-    print("    Max matching error:", np.max(numerics["w"]))
-    print("    Average matching error:", np.mean(numerics["w"]))
-    overbound = pd.read_csv(
-        os.path.join("data", "numerical", "overbound_sym_b90_p997.csv")
-    )
-    sel = ((overbound["m"] == 2) & (overbound["R"] == 2)) | (
-        (overbound["m"] == 3) & (overbound["R"] == 4)
-    )
-    overbound_ident = overbound[~sel]
-    print("  Above conjectured bound")
-    print("    Total cases:", overbound.shape[0])
-    print("    Identifiable cases:", overbound_ident.shape[0])
-    print("    Minimum s_val:", np.min(overbound_ident["s_val"]))
-    print("    Min decomp error:", np.min(overbound_ident["decomp_error"]))
-    print("    Min matching error:", np.min(overbound_ident["w"]))
-    print("    Average matching error:", np.mean(overbound_ident["w"]))
-    # Check predicted size of kernel
-    m = overbound["m"]
-    R = overbound["R"]
-    overbound["pred_kernel"] = R * (R + 1) // 2 - (m + 1) * m**2 * (m - 1) // 12
-    kernel_prediction_excess = overbound["ker_dim"] - overbound["pred_kernel"]
-    print(
-        "    Kernel deviations from prediction:", np.sum(kernel_prediction_excess != 0)
-    )
+    # print("  Below conjectured bound")
+    # print("    Total cases:", numerics.shape[0])
+    # print("    Minimum s_val:", np.min(numerics["s_val"]))
+    # print("    Max decomp error:", np.max(numerics["decomp_error"]))
+    # print("    Max matching error:", np.max(numerics["w"]))
+    # print("    Average matching error:", np.mean(numerics["w"]))
+    # overbound = pd.read_csv(
+    #     os.path.join("data", "numerical", "overbound_sym_b90_p997.csv")
+    # )
+    # sel = ((overbound["m"] == 2) & (overbound["R"] == 2)) | (
+    #     (overbound["m"] == 3) & (overbound["R"] == 4)
+    # )
+    # overbound_ident = overbound[~sel]
+    # print("  Above conjectured bound")
+    # print("    Total cases:", overbound.shape[0])
+    # print("    Identifiable cases:", overbound_ident.shape[0])
+    # print("    Minimum s_val:", np.min(overbound_ident["s_val"]))
+    # print("    Min decomp error:", np.min(overbound_ident["decomp_error"]))
+    # print("    Min matching error:", np.min(overbound_ident["w"]))
+    # print("    Average matching error:", np.mean(overbound_ident["w"]))
+    # # Check predicted size of kernel
+    # m = overbound["m"]
+    # R = overbound["R"]
+    # overbound["pred_kernel"] = R * (R + 1) // 2 - (m + 1) * m**2 * (m - 1) // 12
+    # kernel_prediction_excess = overbound["ker_dim"] - overbound["pred_kernel"]
+    # print(
+    #     "    Kernel deviations from prediction:", np.sum(kernel_prediction_excess != 0)
+    # )
 
 
 def check_symmetric_identifiability(dim, R, s, seed):
@@ -1001,8 +988,21 @@ def check_symmetric_identifiability(dim, R, s, seed):
 
 
 if __name__ == "__main__":
-    # check_symmetric_identifiability(2, 2, 1, 0)
-    # check_symmetric_identifiability(3, 4, 3, 0)
+    # Run all tests from paper
+    run_tests_from_paper()
+    # Print out read-outs for statistics
     analyze_data()
+    # ---------------- Write latex table for test params ----------------
+    generate_labeled_table(
+        "proof_and_numerics_table",
+        40,
+        15,
+        bounds=[
+            certified_all_bound,
+            numerical_all_bound,
+            certified_part_bound,
+            numerical_part_bound,
+        ],
+    )
 
     # generate_certificates("all", 20, 7)
