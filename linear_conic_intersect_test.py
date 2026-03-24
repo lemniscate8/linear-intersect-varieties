@@ -68,7 +68,7 @@ class TestIntersect(unittest.TestCase):
         for dims, mults, rank in self.tensor_signatures:
             factors = [self.rng.normal(size=(d, rank)) for d in dims]
             flat_tensor = np.sum(suma.khatri_rhao_products(factors, mults), axis=1)
-            _, _, diagnostics = lci.jennrich_partial_decomp(
+            _, diagnostics, _ = lci.jennrich_partial_decomp(
                 flat_tensor, dims, mults, rng=self.rng
             )
             self.assertDecompDiagnosticsCheckOut(diagnostics)
