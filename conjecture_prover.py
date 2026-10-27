@@ -38,38 +38,24 @@ def find_non_singular_submatrix(matrix, inverse_table):
     det = 1
     deficit = 0
     col_ind = 0
-    # print("Initial State")
-    # print(matrix)
     while col_ind < cols:
-        # print("Matrix")
-        # print(matrix)
         row_ind = col_ind - deficit
         first_nonzero = np.argmax(matrix[row_ind:, col_ind] != 0) + row_ind
         if matrix[first_nonzero, col_ind] == 0:
-            # print("Final state")
-            # print(matrix)
             return 0, None, col_ind
 
         if first_nonzero != row_ind:
-            # Swap rows
-            # print("Rows swapped")
-            # print(matrix)
             matrix[[row_ind, first_nonzero], :] = matrix[[first_nonzero, row_ind], :]
             row_order[[row_ind, first_nonzero]] = row_order[[first_nonzero, row_ind]]
         det *= matrix[row_ind, col_ind]
         det %= p
         invs = inverse_table[matrix[row_ind:, col_ind]]
         matrix[row_ind:, col_ind:] = matrix[row_ind:, col_ind:] * invs[:, np.newaxis]
-
-        # print("Normalized")
-        # print(matrix % p)
         first_row = p - (matrix[row_ind, col_ind:] % p)
         nnz_rows = (matrix[:, col_ind] % p) != 0
         nnz_rows[: (row_ind + 1)] = False
         matrix[nnz_rows, col_ind:] += first_row[np.newaxis, :]
         matrix[row_ind:, col_ind:] %= p
-        # print("Eliminated")
-        # print(matrix)
         col_ind += 1
     return det, row_order[cols:], cols
 
@@ -313,8 +299,6 @@ def generate_modular_subspace(dims, mults, R, s, inv_table, seed):
         factors = []
         for dim in dims:
             factor = pairwise_lin_indep_vector_set(dim, s, inv_table, rng)
-            # print("Factor")
-            # print(factor)
             factors.append(factor)
         planted = suma.khatri_rhao_products(factors, mults)
     return np.hstack((planted, extras))
@@ -338,7 +322,6 @@ def sparse_k_sampler(k):
         for i in range(num_vecs):
             row_ind = rng.choice(n, size=(vals_per_col), replace=False)
             col_ind = i * np.ones((vals_per_col,), dtype=int)
-            # print(row_ind, col_ind)
             arr[row_ind, col_ind] = vals[:, i]
         return arr
 
@@ -352,17 +335,7 @@ def sparse_k_sampler(k):
 def pairwise_lin_indep_vector_set(
     n, num_vecs, inv_table, rng, sampler=uniform_sample_Fp_vectors
 ):
-    # if num_vecs == 0:
     p = inv_table.size
-    # print(np.log(num_vecs))
-    # print(n * np.log(p) - np.log(p - 1) + np.log(1 - 1 / p**n))
-    # if np.log(num_vecs) > n * np.log(p) - np.log(p - 1) + np.log(1 - 1 / p**n):
-    # if num_vecs > (p**n - 1) // (p - 1):
-    #     raise ValueError(
-    #         "There are fewer than {} pairwise linearly independent vectors over F^{}_{}.".format(
-    #             num_vecs, n, p
-    #         )
-    #     )
     num_pwli = 0
     bank = None
 
@@ -395,20 +368,10 @@ def pairwise_lin_indep_vector_set(
 def m_matrix_determinant(basis, dims, mults, s, inv_table):
     p = inv_table.size
     lift = suma.symmetric_lift(basis[:, ::-1] % p, 2)[:, ::-1] % p
-    # print("Basis is:", basis.dtype)
     exclude = np.cumsum(np.arange(1, s + 1, dtype=np.uint)) - 1
-    # print(exclude)
     partial_lift = np.delete(lift, exclude, 1)
     det_mat = ig.sv_poly_matrix(dims, mults)
     m_matrix = ((det_mat @ partial_lift) % p).astype(np.uint)
-    # print(det_mat)
-    # print(exclude)
-    # print((det_mat @ lift) % p)
-    # print("M matrix")
-    # print(m_matrix)
-
-    # cols = m_matrix.shape[1]
-    # m_matrix = m_matrix[:cols, :]
     det, excluded_rows, _ = find_non_singular_submatrix(m_matrix, inv_table)
     return det, excluded_rows
 
@@ -595,7 +558,6 @@ def find_planted_tensors(
         return None, 0, sing_val, None
     ktensor_dims = [R, kernel_dim]
     ktensor_mults = [2, 1]
-    # mode_expand = [[1, 1, 0], [0, 0, 1]]
     for rounding_seed in range(max_rounding):
         # Seed here determine the random vectors for contracting the tensor
         rng = np.random.default_rng(rounding_seed)
@@ -625,15 +587,10 @@ def generate_real_subspace(dims, mults, R, s, seed):
     extras = np.zeros((N, 0))
     if s < R:
         extras = rng.normal(size=(N, R - s))
-        # extras = pairwise_lin_indep_vector_set(N, R - s, inv_table, rng)
-        # print("Extras")
-        # print(extras)
     if s > 0:
         factors = []
         for dim in dims:
             factor = rng.normal(size=(dim, s))
-            # print("Factor")
-            # print(factor)
             factors.append(factor)
         planted = suma.khatri_rhao_products(factors, mults)
     return np.hstack((planted, extras))
@@ -655,8 +612,6 @@ def get_filename_defaults(
     logname = os.path.join(
         ".", "data", "logs", "log_" + test_type + "_" + base_filename + ".txt"
     )
-    # recordname = test_type + "/" + base_filename + ".csv"
-    # logname = "logs/" + test_type + "_" + base_filename + ".txt"
     return recordname, logname
 
 
@@ -728,13 +683,9 @@ def generate_certificates(
     record_name, log_name = get_filename_defaults(
         upper_bound, modulus, test_class, "certificates", min_dimension=lower_bound
     )
-    # print(record_name)
-    # print(log_name)
     param_set, mults = get_params_and_multiplicities(
         test_class, upper_bound, lower_bound
     )
-    # print(record_name)
-    # print(param_set.shape)
 
     find_certified_subspace_seeds(
         param_set,
@@ -775,9 +726,6 @@ def run_numerical_recovery(
         "numerical",
         min_dimension=lower_bound,
     )
-    # print(param_set)
-    # print(numerical_record)
-    # print(param_set.shape)
 
     test_numerical_recovery(
         param_set,
@@ -841,21 +789,21 @@ numerical_over_bound = 60
 
 def run_tests_from_paper():
     # ---------------- Main tests to run ----------------
-    # generate_certificates("all", certified_all_bound, modulus)
-    # generate_certificates(
-    #     "cpd", certified_part_bound, modulus, lower_bound=certified_all_bound
-    # )
-    # generate_certificates(
-    #     "null", certified_part_bound, modulus, lower_bound=certified_all_bound
-    # )
+    generate_certificates("all", certified_all_bound, modulus)
+    generate_certificates(
+        "cpd", certified_part_bound, modulus, lower_bound=certified_all_bound
+    )
+    generate_certificates(
+        "null", certified_part_bound, modulus, lower_bound=certified_all_bound
+    )
 
-    # run_numerical_recovery("all", numerical_all_bound)
-    # run_numerical_recovery(
-    #     "cpd", numerical_part_bound, lower_bound=numerical_all_bound
-    # )
-    # run_numerical_recovery(
-    #     "null", numerical_part_bound, lower_bound=numerical_all_bound
-    # )
+    run_numerical_recovery("all", numerical_all_bound)
+    run_numerical_recovery(
+        "cpd", numerical_part_bound, lower_bound=numerical_all_bound
+    )
+    run_numerical_recovery(
+        "null", numerical_part_bound, lower_bound=numerical_all_bound
+    )
     run_numerical_recovery("overbound", numerical_over_bound)
 
 
@@ -898,7 +846,7 @@ def analyze_data():
 
     overbound = pd.read_csv(os.path.join("data", "numerical", "overbound_b60_p997.csv"))
     overbound_agg = overbound.groupby(["m", "n", "R", "s"]).aggregate("mean")
-    # print(agg.head(5))
+
     print("  Above conjectured bound")
     print("    Total cases:", overbound_agg.shape[0])
     print("    Minimum s_val:", np.min(overbound_agg["s_val"]))
