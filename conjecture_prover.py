@@ -125,7 +125,7 @@ def list_sym_shapes(upper_bound):
 
 # Returns all (m,n,R,s) parameters that meet the conditions of the conjecture
 # with m*n/sqrt(2) < upper_bound and 'R' as large as possible for a given 's'
-def list_subshapes(upper_bound):
+def list_subshapes(upper_bound, filter=None):
     blocks = []
     shapes = list_shapes(upper_bound)
     for m, n, R_max in shapes:
@@ -136,6 +136,11 @@ def list_subshapes(upper_bound):
         block[:, 2] = max_dimensions(m, n, block[:, 3]).astype(np.uint)
         blocks.append(block)
     all_shapes = np.vstack(blocks)
+    if filter is not None:
+        select = filter(
+            all_shapes[:, 0], all_shapes[:, 1], all_shapes[:, 2], all_shapes[:, 3]
+        )
+        return all_shapes[select, :]
     return all_shapes
 
 
@@ -317,7 +322,6 @@ def generate_modular_subspace(dims, mults, R, s, inv_table, seed):
 
 # DO NOT TOUCH, altering procedure will invalidate ALL CERTIFIED SEEDS currently
 # recorded
-# A discretization of Guassian random vectors centered at (0,0,...,0)
 def uniform_sample_Fp_vectors(n, num_vecs, p, rng):
     arr = rng.integers(0, p, size=(n, num_vecs), dtype=np.int32)
     return arr
@@ -350,12 +354,15 @@ def pairwise_lin_indep_vector_set(
 ):
     # if num_vecs == 0:
     p = inv_table.size
-    if np.log(num_vecs) > n * np.log(p) - np.log(p - 1) + np.log(1 - 1 / p**n):
-        raise ValueError(
-            "There are fewer than {} pairwise linearly independent vectors over F^{}_{}.".format(
-                num_vecs, n, p
-            )
-        )
+    # print(np.log(num_vecs))
+    # print(n * np.log(p) - np.log(p - 1) + np.log(1 - 1 / p**n))
+    # if np.log(num_vecs) > n * np.log(p) - np.log(p - 1) + np.log(1 - 1 / p**n):
+    # if num_vecs > (p**n - 1) // (p - 1):
+    #     raise ValueError(
+    #         "There are fewer than {} pairwise linearly independent vectors over F^{}_{}.".format(
+    #             num_vecs, n, p
+    #         )
+    #     )
     num_pwli = 0
     bank = None
 
@@ -413,6 +420,7 @@ def test_numerical_recovery(
     record_name,
     log_name,
     overwrite=False,
+    trials=1,
     max_attempts=10,
     max_rounding=3,
     decomp_tol=1e-6,
@@ -423,10 +431,12 @@ def test_numerical_recovery(
     log.write("---------------------------------------------------------\n")
     log.write("Starting new session.\n")
     index = 0
+    seed = 0
     if not overwrite:
         try:
             current_data = pd.read_csv(record_name)
-            index = current_data.shape[0]
+            index = current_data.shape[0] // trials
+            seed = current_data.shape[0] % trials
         except FileNotFoundError:
             log.write(
                 "Failed to find "
@@ -443,8 +453,11 @@ def test_numerical_recovery(
         "seed",
         "ker_dim",
         "s_val",
+        "eig_error",
+        "lstsq_error",
         "decomp_error",
-        "w",
+        "match_worst",
+        "match_best"
     ]
     while index < num_shapes:
         start_time = timeit.default_timer()
@@ -457,44 +470,56 @@ def test_numerical_recovery(
         )
         log.write(instance_string + "\n")
         print(instance_string)
-        data = {"m": dims[0], "R": R, "s": s, "seed": 0}
-        if dims.size > 1:
-            data.update({"n": dims[1]})
-        try:
-            seed, kernel_dim, sing_val, decomp_error, w = verify_floating_pt_recovery(
-                dims,
-                mults,
-                R,
-                s,
-                max_attempts=max_attempts,
-                max_rounding=max_rounding,
-                decomp_tol=decomp_tol,
-                sing_tol=sing_tol,
-                error_tol=error_tol,
-                log_file=log,
+        for _ in range(trials):
+            data = {"m": dims[0], "R": R, "s": s, "seed": seed}
+            if dims.size > 1:
+                data.update({"n": dims[1]})
+            try:
+                seed_used, kernel_dim, sing_val, errors, w,b = verify_floating_pt_recovery(
+                    dims,
+                    mults,
+                    R,
+                    s,
+                    seed_offset=seed,
+                    max_attempts=max_attempts,
+                    max_rounding=max_rounding,
+                    decomp_tol=decomp_tol,
+                    sing_tol=sing_tol,
+                    error_tol=error_tol,
+                    log_file=log,
+                )
+                data.update(
+                    {
+                        "seed": seed_used,
+                        "ker_dim": kernel_dim,
+                        "s_val": sing_val,
+                        "match_worst": w,
+                        "match_best": b
+                    }
+                )
+                if errors is not None:
+                    data.update(
+                        {
+                            "eig_error": np.max(errors[2]),
+                            "lstsq_error": lg.norm(errors[1]),
+                            "decomp_error": errors[0]
+                        }
+                    )
+                seed = seed_used
+            except np.exceptions.TooHardError as err:
+                log.write("  " + err.args[0] + "\n")
+            row = pd.DataFrame([data], columns=frame_headers)
+            row.to_csv(
+                record_name,
+                mode="w" if (index == 0 and seed == 0) and overwrite else "a",
+                header= (index == 0 and seed == 0),
+                index=False,
             )
-            data.update(
-                {
-                    "seed": seed,
-                    "ker_dim": kernel_dim,
-                    "s_val": sing_val,
-                    "decomp_error": decomp_error,
-                    "w": w,
-                }
-            )
-        except np.exceptions.TooHardError as err:
-            log.write("  " + err.args[0] + "\n")
-
-        row = pd.DataFrame([data], columns=frame_headers)
-        row.to_csv(
-            record_name,
-            mode="w" if (index == 0) and overwrite else "a",
-            header=index == 0,
-            index=False,
-        )
+            seed +=1
         end_time = timeit.default_timer()
         log.write("  Elapsed time: %f\n" % (end_time - start_time))
         index += 1
+        seed = 0
 
 
 def verify_floating_pt_recovery(
@@ -502,6 +527,7 @@ def verify_floating_pt_recovery(
     mults,
     R,
     s,
+    seed_offset=0,
     max_attempts=10,
     max_rounding=3,
     decomp_tol=1e-6,
@@ -509,11 +535,11 @@ def verify_floating_pt_recovery(
     error_tol=1e-12,
     log_file=None,
 ):
-    for seed in range(max(max_attempts, 1)):
+    for seed in range(seed_offset, max(max_attempts, 1)+seed_offset):
         real_basis = generate_real_subspace(dims, mults, R, s, seed)
         orth_basis = lg.orth(real_basis)
         try:
-            recovered, kernel_dim, sing_value, decomp_error = find_planted_tensors(
+            recovered, kernel_dim, sing_value, errors = find_planted_tensors(
                 orth_basis,
                 dims,
                 mults,
@@ -523,10 +549,12 @@ def verify_floating_pt_recovery(
                 log_file=None,
             )
             if (kernel_dim > 0) and (s > 0):
-                w = 1 - np.min(suma.similarity_between(recovered, real_basis[:, :s]))
+                similarities = suma.similarity_between(recovered, real_basis[:, :s])
+                w = 1 - np.min(similarities)
+                b = 1 - np.max(similarities)
                 if w < error_tol:
-                    return seed, kernel_dim, sing_value, decomp_error, w
-            return seed, kernel_dim, sing_value, decomp_error, np.nan
+                    return seed, kernel_dim, sing_value, errors, w,b
+            return seed, kernel_dim, sing_value, errors, np.nan, np.nan
         except (np.linalg.LinAlgError, np.exceptions.TooHardError) as err:
             log_file.write("  " + str(err) + "\n")
     raise np.exceptions.TooHardError(
@@ -555,7 +583,7 @@ def find_planted_tensors(
             kernel_basis = np.array([[1]])
             sing_val = np.nan
         else:
-            return None, 0, sing_val, np.nan
+            return None, 0, sing_val, None
     else:
         _, sing_vals, vh = lg.svd(minors_matrix, overwrite_a=True)
         ind = np.sum(sing_vals > sing_tol)
@@ -564,7 +592,7 @@ def find_planted_tensors(
         kernel_basis = vh[ind:, :].transpose() / weights[:, None]
     kernel_dim = kernel_basis.shape[1]
     if kernel_dim <= 0:
-        return None, 0, sing_val, np.nan
+        return None, 0, sing_val, None
     ktensor_dims = [R, kernel_dim]
     ktensor_mults = [2, 1]
     # mode_expand = [[1, 1, 0], [0, 0, 1]]
@@ -573,18 +601,17 @@ def find_planted_tensors(
         rng = np.random.default_rng(rounding_seed)
         # Jennrich's algorithm recovers the coefficients on basis vectors
         # to produce planted solutions
-        factors, diagnostics, _ = lci.jennrich_partial_decomp(
+        factors, diagnostic_errors, _ = lci.jennrich_partial_decomp(
             kernel_basis.flatten(),
             ktensor_dims,
             ktensor_mults,
             rng=rng,
             atol=sing_tol,
-            expected_rank=kernel_dim,
+            expected_rank=min(R,kernel_dim),
         )
-        error = diagnostics[0]
         recovered = basis @ factors[0]
-        if error < decomp_tol:
-            return recovered, kernel_dim, sing_val, error
+        if diagnostic_errors[0] < decomp_tol:
+            return recovered, kernel_dim, sing_val, diagnostic_errors
     raise np.exceptions.TooHardError("Jennrich's failed to decompose tensor.")
 
 
@@ -677,10 +704,10 @@ def get_params_and_multiplicities(test_class, upper_bound, lower_bound=None):
 
     if lower_bound is not None:
         if is_sym:
-            sel = param_set[:, 0] ** 2 / np.sqrt(6) >= lower_bound
+            sel = param_set[:, 0] ** 2 / np.sqrt(6) > lower_bound
             param_set = param_set[sel, :]
         else:
-            sel = param_set[:, 0] * param_set[:, 1] / np.sqrt(2) >= lower_bound
+            sel = param_set[:, 0] * param_set[:, 1] / np.sqrt(2) > lower_bound
             param_set = param_set[sel, :]
     return param_set, mults
 
@@ -706,7 +733,8 @@ def generate_certificates(
     param_set, mults = get_params_and_multiplicities(
         test_class, upper_bound, lower_bound
     )
-    # print(param_set)
+    # print(record_name)
+    # print(param_set.shape)
 
     find_certified_subspace_seeds(
         param_set,
@@ -730,9 +758,11 @@ def run_numerical_recovery(
     sing_tol=1e-9,
     error_tol=1e-12,
 ):
+    trials = 1
     if test_class.split("_")[0] == "overbound":
         decomp_tol = np.inf
         error_tol = np.inf
+        trials=10
 
     param_set, mults = get_params_and_multiplicities(
         test_class, upper_bound, lower_bound
@@ -745,12 +775,16 @@ def run_numerical_recovery(
         "numerical",
         min_dimension=lower_bound,
     )
+    # print(param_set)
+    # print(numerical_record)
+    # print(param_set.shape)
 
     test_numerical_recovery(
         param_set,
         mults,
         numerical_record,
         numerical_log,
+        trials=trials,
         max_attempts=max_attempts,
         max_rounding=max_rounding,
         decomp_tol=decomp_tol,
@@ -801,43 +835,28 @@ numerical_all_bound = 80
 numerical_part_bound = 165
 numerical_over_bound = 60
 
-all_sym_bound = 90
-part_sym_bound = 190
+# all_sym_bound = 90
+# part_sym_bound = 190
 
 
 def run_tests_from_paper():
     # ---------------- Main tests to run ----------------
-    generate_certificates("all", certified_all_bound, modulus)
-    generate_certificates(
-        "cpd", certified_part_bound, modulus, lower_bound=certified_all_bound + 1
-    )
-    generate_certificates(
-        "null", certified_part_bound, modulus, lower_bound=certified_all_bound + 1
-    )
+    # generate_certificates("all", certified_all_bound, modulus)
+    # generate_certificates(
+    #     "cpd", certified_part_bound, modulus, lower_bound=certified_all_bound
+    # )
+    # generate_certificates(
+    #     "null", certified_part_bound, modulus, lower_bound=certified_all_bound
+    # )
 
-    run_numerical_recovery("all", numerical_all_bound)
-    run_numerical_recovery(
-        "cpd", numerical_part_bound, lower_bound=numerical_all_bound + 1
-    )
-    run_numerical_recovery(
-        "null", numerical_part_bound, lower_bound=numerical_all_bound + 1
-    )
+    # run_numerical_recovery("all", numerical_all_bound)
+    # run_numerical_recovery(
+    #     "cpd", numerical_part_bound, lower_bound=numerical_all_bound
+    # )
+    # run_numerical_recovery(
+    #     "null", numerical_part_bound, lower_bound=numerical_all_bound
+    # )
     run_numerical_recovery("overbound", numerical_over_bound)
-
-    # ---------------- Symmetric tests to run ----------------
-
-    # generate_certificates("all_sym", all_sym_bound, modulus)
-    # generate_certificates(
-    #     "cpd_sym", part_sym_bound, modulus, lower_bound=all_sym_bound + 1
-    # )
-    # generate_certificates(
-    #     "null_sym", part_sym_bound, modulus, lower_bound=all_sym_bound + 1
-    # )
-
-    # run_numerical_recovery("all_sym", all_sym_bound)
-    # run_numerical_recovery("cpd_sym", part_sym_bound, lower_bound=all_sym_bound + 1)
-    # run_numerical_recovery("null_sym", part_sym_bound, lower_bound=all_sym_bound + 1)
-    # run_numerical_recovery("overbound_sym", all_sym_bound)
 
 
 def analyze_data():
@@ -846,8 +865,8 @@ def analyze_data():
     print("----- Original case ------")
     reg_cert_files = [
         "all_b60_p997.csv",
-        "cpd_b61-120_p997.csv",
-        "null_b61-120_p997.csv",
+        "cpd_b60-120_p997.csv",
+        "null_b60-120_p997.csv",
     ]
 
     reg_cert_data = [
@@ -863,8 +882,8 @@ def analyze_data():
 
     reg_num_files = [
         "all_b80_p997.csv",
-        "cpd_b81-165_p997.csv",
-        "null_b81-165_p997.csv",
+        "cpd_b80-165_p997.csv",
+        "null_b80-165_p997.csv",
     ]
     reg_numerical_data = [
         pd.read_csv(os.path.join("data", "numerical", file)) for file in reg_num_files
@@ -875,14 +894,19 @@ def analyze_data():
     print("    Total cases:", numerics.shape[0])
     print("    Minimum s_val:", np.min(numerics["s_val"]))
     print("    Max decomp error:", np.max(numerics["decomp_error"]))
-    print("    Max matching error:", np.max(numerics["w"]))
+    print("    Max worst matching error:", np.max(numerics["match_worst"]))
+
     overbound = pd.read_csv(os.path.join("data", "numerical", "overbound_b60_p997.csv"))
+    overbound_agg = overbound.groupby(["m", "n", "R", "s"]).aggregate("mean")
+    # print(agg.head(5))
     print("  Above conjectured bound")
-    print("    Total cases:", overbound.shape[0])
-    print("    Minimum s_val:", np.min(overbound["s_val"]))
-    print("    Min decomp error:", np.min(overbound["decomp_error"]))
-    print("    Min matching error:", np.min(overbound["w"]))
-    print("    Average matching error:", np.mean(overbound["w"]))
+    print("    Total cases:", overbound_agg.shape[0])
+    print("    Minimum s_val:", np.min(overbound_agg["s_val"]))
+    print("    Min eigenvalue matching error:", np.min(overbound_agg["eig_error"]))
+    print("    Min least squares error:", np.min(overbound_agg["lstsq_error"]))
+    print("    Min decomp error:", np.min(overbound_agg["decomp_error"]))
+    print("    Min average best-case matching error:", np.min(overbound_agg["match_best"]))
+    print("    Total average best-case matching error:", np.mean(overbound_agg["match_best"]))
     # Check predicted size of kernel
     m = overbound["m"]
     n = overbound["n"]
@@ -890,8 +914,9 @@ def analyze_data():
     overbound["pred_kernel"] = R * (R + 1) // 2 - m * (m - 1) * n * (n - 1) // 4
     kernel_prediction_excess = overbound["ker_dim"] - overbound["pred_kernel"]
     print(
-        "    Kernel deviations from prediction:", np.sum(kernel_prediction_excess != 0)
+        "    Kernel deviations from predicted:", np.sum(kernel_prediction_excess != 0)
     )
+
 
     # # Plotly plots
     # overbound["kernel_excess"] = overbound["ker_dim"] - overbound["s"]
@@ -1004,5 +1029,3 @@ if __name__ == "__main__":
             numerical_part_bound,
         ],
     )
-
-    # generate_certificates("all", 20, 7)

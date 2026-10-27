@@ -108,6 +108,13 @@ def symmetric_lift(basis, k):
     return lifted_basis / k_fact
 
 
+def discrete_symmetric_lift(basis, k):
+    ncols = basis.shape[1]
+    return (symmetric_lift(basis, k) * symmetric_weights(ncols, 2).astype(int)) // int(
+        factorial(k)
+    )
+
+
 # Weights for switching from canonical Veronese embedding to a Segre embedding
 def symmetric_weights(basis_dim, k):
     num_entries = int(binom(basis_dim + k - 1, k))
